@@ -1,0 +1,197 @@
+//file:noinspection GrMethodMayBeStatic
+//file:noinspection GradlePackageVersionRange
+
+import static org.jetbrains.gradle.ext.ActionDelegationConfig.TestRunner
+
+plugins {
+	id 'maven-publish'
+
+	id 'org.jetbrains.kotlin.jvm'
+
+	id "org.jetbrains.gradle.plugin.idea-ext"
+	id 'com.diffplug.spotless'
+	id 'net.kyori.blossom'
+
+	alias(libs.plugins.quilt.loom)
+}
+
+archivesBaseName = project.archives_base_name
+version = "${project.mod_version}+${libs.versions.minecraft.get()}"
+group = project.maven_group
+
+ext {
+	local = new File("./lib")
+	local.mkdir()
+}
+
+repositories {
+	flatDir {
+		dirs "./lib", "./.gradle/loom-cache/remapped_mods"
+	}
+
+	maven {
+		name 'Quilt'
+		url 'https://maven.quiltmc.org/repository/release'
+	}
+
+	maven {
+		name 'JitPack'
+		url 'https://jitpack.io'
+	}
+
+	mavenCentral()
+}
+
+dependencies {
+	minecraft libs.minecraft
+	mappings variantOf(libs.quilt.mappings) { classifier 'intermediary-v2' }
+	modImplementation libs.quilt.loader
+	modImplementation libs.quilted.fabric.api
+
+	modImplementation(libs.fabric.language.kotlin) {
+		exclude(group: "net.fabricmc")
+	}
+
+	if (!local.length()) {
+		modRuntimeOnly files("./lib")
+	}
+}
+
+task copyLocal(type: Copy) {
+	from("./lib")
+	into("./run/mods")
+	include("*.jar")
+}
+processResources.dependsOn copyLocal
+
+loom {
+	accessWidenerPath = file("src/main/resources/${archives_base_name}.accesswidener")
+}
+
+compileJava {
+	options.encoding = "UTF-8"
+	sourceCompatibility = targetCompatibility = project.java_version
+}
+
+compileKotlin {
+	kotlinOptions {
+		jvmTarget = project.java_version
+	}
+	sourceCompatibility = targetCompatibility = project.java_version
+}
+
+java {
+	/*toolchain {
+	 languageVersion = JavaLanguageVersion.of(project.java_version)
+	 }*/
+	withSourcesJar()
+}
+
+jar {
+	from("LICENSE") {
+		rename { "${it}_${project.archivesBaseName}" }
+	}
+}
+
+spotless {
+	ratchetFrom "origin/${branch}"
+
+	java {
+		target 'src/*/java/**/*.java'
+
+		importOrder()
+		removeUnusedImports()
+		googleJavaFormat()
+
+		licenseHeader "/* ${expand_license(license_header)} */\n\n"
+	}
+
+	groovyGradle {
+		target '*.gradle'
+
+		greclipse()
+	}
+
+	kotlin {
+		ktlint(ktlint_version)
+
+		licenseHeader "/* ${expand_license(license_header)} */\n\n"
+	}
+
+	json {
+		target 'src/**/*.json'
+
+		simple()
+	}
+
+	format 'misc', {
+		target '*.md', '.gitignore'
+
+		trimTrailingWhitespace()
+		indentWithTabs()
+		endWithNewline()
+	}
+}
+compileJava.dependsOn spotlessApply
+compileKotlin.dependsOn spotlessApply
+
+blossom {
+	replaceToken('$[name]', project.property('mod_name'))
+	replaceToken('$[author]', project.property('mod_author'))
+	replaceToken('$[version]', project.property('mod_version'))
+
+	replaceToken('$[id]', project.property('archives_base_name'))
+	replaceToken('$[group]', project.property('maven_group'))
+
+	replaceToken('$[java]', project.property('java_version'))
+	replaceToken('$[kotlin]', project.property('kotlin_version'))
+
+	replaceToken('$[minecraft]', libs.versions.minecraft.get())
+	replaceToken('$[yarn]', libs.versions.quilt.mappings.get())
+	replaceToken('$[loader]', libs.versions.quilt.loader.get())
+	replaceToken('$[loom]', libs.versions.quilt.loom.get())
+	replaceToken('$[quilt]', libs.versions.quilted.fabric.api.get())
+}
+
+processResources {
+	filesMatching("*.json") {
+		expand([
+			"id"       : project.archives_base_name,
+			"name"     : project.mod_name,
+			"version"  : project.version,
+			"author"   : project.mod_author,
+			"desc"     : project.mod_desc,
+			"site"     : project.mod_site,
+			"src"      : project.mod_src,
+			"minecraft": libs.versions.minecraft.get(),
+			"quilt"    : ver(libs.versions.quilted.fabric.api),
+			"loader"   : ver(libs.versions.quilt.loader),
+			"java"     : project.java_version,
+			"adapter"  : "1.7.4+kotlin.${kotlin_version}",
+			"group"    : project.maven_group,
+			"license"  : project.license_type,
+		])
+	}
+}
+
+idea.project.settings {
+	delegateActions {
+		delegateBuildRunToGradle = false
+		testRunner = TestRunner.PLATFORM
+	}
+
+	taskTriggers {
+		beforeSync project.getTasksByName("genSources", true)
+	}
+}
+
+String expand_license(String old) {
+	old = old.replace('\$DEVELOPER', mod_author)
+	old = old.replace('\$LICENSE', license_type.toUpperCase())
+
+	return old
+}
+
+String ver(Provider<?> provider) {
+	return provider.get().split("-").first()
+}
