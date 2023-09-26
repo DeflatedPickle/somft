@@ -12,4 +12,5 @@ a minecraft overhaul for all i think of
 - entity knock back velocity based on their size
 - flowers are edible but disgusting
 - lit blocks spread fire
+- empty inksack item
 

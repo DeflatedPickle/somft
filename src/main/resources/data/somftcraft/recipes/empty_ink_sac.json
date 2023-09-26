@@ -1,0 +1,11 @@
+{
+    "result": {
+        "item": "somftcraft:empty_ink_sac",
+        "count": 1
+    },
+    "ingredients": [
+        {"item": "minecraft:leather"},
+        {"item": "minecraft:leather"}
+    ],
+    "type": "minecraft:crafting_shapeless"
+}
