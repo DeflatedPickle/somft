@@ -4,10 +4,12 @@
 
 package com.deflatedpickle.somftcraft
 
+import com.deflatedpickle.somftcraft.block.dispenser.HorseArmorDispenserBehavior
 import com.deflatedpickle.somftcraft.item.EmptyInkSacItem
 import com.deflatedpickle.somftcraft.item.HorseArmorItemExt
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents
 import net.fabricmc.fabric.api.loot.v2.LootTableEvents
+import net.minecraft.block.dispenser.DispenserBlock
 import net.minecraft.item.Item
 import net.minecraft.item.ItemGroups
 import net.minecraft.loot.LootPool
@@ -67,5 +69,8 @@ object somftcraft : ModInitializer {
                 tableBuilder.pool(poolBuilder)
             }
         }
+
+        DispenserBlock.registerBehavior(CHAINMAIL_HORSE_ARMOUR, HorseArmorDispenserBehavior)
+        DispenserBlock.registerBehavior(NETHERITE_HORSE_ARMOUR, HorseArmorDispenserBehavior)
     }
 }

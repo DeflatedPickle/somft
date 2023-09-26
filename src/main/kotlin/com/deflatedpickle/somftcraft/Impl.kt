@@ -2,6 +2,7 @@
 
 package com.deflatedpickle.somftcraft
 
+import com.deflatedpickle.somftcraft.api.Milkable
 import com.mojang.datafixers.util.Either
 import com.mojang.datafixers.util.Pair
 import net.minecraft.block.Block
@@ -18,6 +19,8 @@ import net.minecraft.entity.Entity
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.damage.DamageSource
 import net.minecraft.entity.effect.StatusEffectUtil
+import net.minecraft.entity.passive.CowEntity
+import net.minecraft.entity.passive.SheepEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.vehicle.AbstractMinecartEntity
 import net.minecraft.entity.vehicle.BoatEntity
@@ -25,6 +28,7 @@ import net.minecraft.inventory.Inventories
 import net.minecraft.item.ArmorItem
 import net.minecraft.item.BlockItem
 import net.minecraft.item.BucketItem
+import net.minecraft.item.DyeItem
 import net.minecraft.item.EnchantedBookItem
 import net.minecraft.item.FireChargeItem
 import net.minecraft.item.FlintAndSteelItem
@@ -37,6 +41,7 @@ import net.minecraft.item.Items
 import net.minecraft.item.PotionItem
 import net.minecraft.item.PowderSnowBucketItem
 import net.minecraft.item.TippedArrowItem
+import net.minecraft.particle.ParticleTypes
 import net.minecraft.potion.PotionUtil
 import net.minecraft.registry.tag.BiomeTags
 import net.minecraft.sound.SoundCategory
@@ -51,6 +56,7 @@ import net.minecraft.util.collection.DefaultedList
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.Axis
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Box
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.GameRules
@@ -412,6 +418,10 @@ object Impl {
                 }
             }
         } else if (world.getBlockState(blockPos.down()).block == Blocks.FARMLAND) {
+            if (item is HoeItem) {
+                cir.returnValue = itemStack
+            }
+
             if (itemStack.isFood) {
                 val ctx = ItemPlacementContext(
                     world, null, null,
@@ -430,6 +440,59 @@ object Impl {
                     }
                 }
             }
+        }
+
+        for (
+            cow in world
+                .getEntitiesByClass(
+                    CowEntity::class.java, Box(blockPos)
+                ) { entity: CowEntity -> entity.isAlive && !entity.isBaby }
+        ) {
+            if (item == Items.BUCKET) {
+                if ((cow as Milkable).`somftcraft$getMilkTicks`() <= 0) {
+                    (cow as Milkable).`somftcraft$setMilkTicks`(24000 / 5)
+                    cir.returnValue = Items.MILK_BUCKET.defaultStack
+                } else {
+                    world.playSound(null, blockPos, SoundEvents.ENTITY_COW_MILK, SoundCategory.PLAYERS, 1.0f, 1.0f)
+                    spawnPlayerReactionParticles(cow)
+                    cir.returnValue = itemStack
+                }
+            }
+        }
+
+        for (
+            sheep in world
+                .getEntitiesByClass(
+                    SheepEntity::class.java, Box(blockPos)
+                ) { entity: SheepEntity -> entity.isAlive && !entity.isSheared }
+        ) {
+            if (item is DyeItem && sheep.color != item.color) {
+                if (!sheep.world.isClient) {
+                    sheep.color = item.color
+                    itemStack.decrement(1)
+
+                    cir.returnValue = itemStack
+                }
+            }
+        }
+    }
+
+    fun spawnPlayerReactionParticles(entity: Entity) {
+        for (i in 0..6) {
+            val d = entity.random.nextGaussian() * 0.02
+            val e = entity.random.nextGaussian() * 0.02
+            val f = entity.random.nextGaussian() * 0.02
+
+            entity.world
+                .addParticle(
+                    ParticleTypes.SMOKE,
+                    entity.getParticleX(1.0),
+                    entity.randomBodyY + 0.5,
+                    entity.getParticleZ(1.0),
+                    d,
+                    e,
+                    f
+                )
         }
     }
 }

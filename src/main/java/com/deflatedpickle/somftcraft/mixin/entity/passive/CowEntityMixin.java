@@ -2,6 +2,8 @@
 
 package com.deflatedpickle.somftcraft.mixin.entity.passive;
 
+import com.deflatedpickle.somftcraft.Impl;
+import com.deflatedpickle.somftcraft.api.Milkable;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
@@ -9,9 +11,7 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.CowEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @SuppressWarnings({"WrongEntityDataParameterClass", "UnusedMixin"})
 @Mixin(CowEntity.class)
-public abstract class CowEntityMixin extends AnimalEntity {
+public abstract class CowEntityMixin extends AnimalEntity implements Milkable {
   @Shadow
   protected abstract SoundEvent getAmbientSound();
 
@@ -40,13 +40,11 @@ public abstract class CowEntityMixin extends AnimalEntity {
     super(entityType, world);
   }
 
-  @Unique
-  public int getMilkTicks() {
+  public int somftcraft$getMilkTicks() {
     return this.dataTracker.get(MILK_TICKS);
   }
 
-  @Unique
-  public void setMilkTicks(int ticks) {
+  public void somftcraft$setMilkTicks(int ticks) {
     this.dataTracker.set(MILK_TICKS, ticks);
   }
 
@@ -59,11 +57,9 @@ public abstract class CowEntityMixin extends AnimalEntity {
   @Inject(method = "interactMob", at = @At("HEAD"), cancellable = true)
   public void interactMob(
       PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
-    if (getMilkTicks() > 0) {
-      if (player.getActiveItem().getItem() == Items.BUCKET) {
-        playAmbientSound();
-        spawnPlayerReactionParticles();
-      }
+    if (somftcraft$getMilkTicks() > 0) {
+      playAmbientSound();
+      Impl.INSTANCE.spawnPlayerReactionParticles(this);
       cir.setReturnValue(super.interactMob(player, hand));
     }
   }
@@ -78,43 +74,24 @@ public abstract class CowEntityMixin extends AnimalEntity {
               shift = At.Shift.BEFORE))
   public void interactMobMilkTicks(
       PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
-    setMilkTicks(MILK_TICKS_MAX);
+    somftcraft$setMilkTicks(MILK_TICKS_MAX);
   }
 
   @Override
   public void tick() {
     super.tick();
-    setMilkTicks(Math.max(0, getMilkTicks() - 1));
+    somftcraft$setMilkTicks(Math.max(0, somftcraft$getMilkTicks() - 1));
   }
 
   @Override
   public void writeCustomDataToNbt(NbtCompound nbt) {
     super.writeCustomDataToNbt(nbt);
-    nbt.putInt(NBT_KEY, this.getMilkTicks());
+    nbt.putInt(NBT_KEY, this.somftcraft$getMilkTicks());
   }
 
   @Override
   public void readCustomDataFromNbt(NbtCompound nbt) {
     super.readCustomDataFromNbt(nbt);
-    this.setMilkTicks(nbt.getInt(NBT_KEY));
-  }
-
-  @Unique
-  public void spawnPlayerReactionParticles() {
-    for (int i = 0; i < 7; ++i) {
-      double d = this.random.nextGaussian() * 0.02D;
-      double e = this.random.nextGaussian() * 0.02D;
-      double f = this.random.nextGaussian() * 0.02D;
-
-      this.getWorld()
-          .addParticle(
-              ParticleTypes.SMOKE,
-              this.getParticleX(1.0D),
-              this.getRandomBodyY() + 0.5D,
-              this.getParticleZ(1.0D),
-              d,
-              e,
-              f);
-    }
+    this.somftcraft$setMilkTicks(nbt.getInt(NBT_KEY));
   }
 }

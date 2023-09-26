@@ -19,4 +19,6 @@ a vanilla+ mechanics overhaul and additions
 - dispensers can interact with cauldrons
 - dispensers can use hoes
 - dispensers can plant crops
+- dispensers can milk cows
+- dispensers can dye sheep
 
