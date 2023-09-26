@@ -1,5 +1,5 @@
 # somftcraft ![Build](https://github.com/DeflatedPickle/somftcraft/actions/workflows/gradle-build.yml/badge.svg)
-a minecraft overhaul for all i think of
+a vanilla+ mechanics overhaul and additions
 
 ## what it do tho
 - mobs can be set on fire directly
@@ -9,9 +9,10 @@ a minecraft overhaul for all i think of
 - crouch click vehicles to pick them up
 - recently fed animals loose interest in food
 - milking has a delay
-- entity knock back velocity based on their size
+- entities are knocked back based on their size
 - flowers are edible but disgusting
 - lit blocks spread fire
-- empty inksack item
+- empty inksack item & ink collection from squids
 - chainmail & netherite horse armour
+- shows arrows stuck in mobs & lets you pull them out
 

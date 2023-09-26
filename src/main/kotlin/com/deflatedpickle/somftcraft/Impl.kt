@@ -1,10 +1,11 @@
-/* Copyright (c) 2023 DeflatedPickle under the MIT license */
+/* Copyright (c) 2023 DeflatedPickle under the GPLv3 license */
 
 package com.deflatedpickle.somftcraft
 
 import com.mojang.datafixers.util.Either
 import net.minecraft.block.Blocks
 import net.minecraft.block.FireBlock
+import net.minecraft.block.RedstoneOreBlock
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.GuiGraphics
@@ -256,5 +257,31 @@ object Impl {
         }
 
         return ActionResult.PASS
+    }
+
+    fun removeArrow(entity: LivingEntity, player: PlayerEntity): Boolean = if (
+        player.getStackInHand(player.activeHand).isEmpty &&
+        entity.stuckArrowCount - 1 >= 0
+    ) {
+        if (!entity.world.isClient) {
+            player.giveItemStack(ItemStack(Items.ARROW))
+            entity.stuckArrowCount -= 1
+            entity.damage(player.world.damageSources.playerAttack(player), 1f)
+        }
+        player.world.playSound(
+            entity.x,
+            entity.y,
+            entity.z,
+            SoundEvents.BLOCK_WET_GRASS_STEP,
+            SoundCategory.PLAYERS,
+            1.0f,
+            1.0f,
+            false
+        )
+        RedstoneOreBlock.spawnParticles(player.world, entity.blockPos)
+
+        true
+    } else {
+        false
     }
 }

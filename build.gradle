@@ -187,7 +187,7 @@ idea.project.settings {
 
 String expand_license(String old) {
 	old = old.replace('\$DEVELOPER', mod_author)
-	old = old.replace('\$LICENSE', license_type.toUpperCase())
+	old = old.replace('\$LICENSE', license_type)
 
 	return old
 }

@@ -11,3 +11,8 @@ accessible method net/minecraft/entity/vehicle/HopperMinecartEntity getDroppedIt
 accessible method net/minecraft/entity/vehicle/SpawnerMinecartEntity getDroppedItem ()Lnet/minecraft/item/Item;
 accessible method net/minecraft/entity/vehicle/TntMinecartEntity getDroppedItem ()Lnet/minecraft/item/Item;
 accessible field net/minecraft/item/HorseArmorItem entityTexture Ljava/lang/String;
+accessible field net/minecraft/client/model/ModelPart cuboids Ljava/util/List;
+accessible field net/minecraft/client/model/ModelPart children Ljava/util/Map;
+accessible method net/minecraft/client/render/entity/model/AnimalModel getHeadParts ()Ljava/lang/Iterable;
+accessible method net/minecraft/client/render/entity/model/AnimalModel getBodyParts ()Ljava/lang/Iterable;
+accessible method net/minecraft/block/RedstoneOreBlock spawnParticles (Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;)V

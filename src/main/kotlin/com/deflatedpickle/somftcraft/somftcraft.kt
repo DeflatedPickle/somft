@@ -1,4 +1,4 @@
-/* Copyright (c) 2023 DeflatedPickle under the MIT license */
+/* Copyright (c) 2023 DeflatedPickle under the GPLv3 license */
 
 @file:Suppress("ClassName", "SpellCheckingInspection", "MemberVisibilityCanBePrivate")
 
@@ -18,7 +18,6 @@ import net.minecraft.registry.Registry
 import net.minecraft.util.Identifier
 import org.quiltmc.loader.api.ModContainer
 import org.quiltmc.qsl.base.api.entrypoint.ModInitializer
-
 
 object somftcraft : ModInitializer {
     val CHAINMAIL_HORSE_ARMOUR = HorseArmorItemExt(6, "chainmail", Item.Settings().maxCount(1))
