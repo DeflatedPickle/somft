@@ -13,4 +13,5 @@ a minecraft overhaul for all i think of
 - flowers are edible but disgusting
 - lit blocks spread fire
 - empty inksack item
+- chainmail & netherite horse armour
 
