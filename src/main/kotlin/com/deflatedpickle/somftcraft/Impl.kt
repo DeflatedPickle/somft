@@ -3,9 +3,12 @@
 package com.deflatedpickle.somftcraft
 
 import com.mojang.datafixers.util.Either
+import net.minecraft.block.Block
+import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
 import net.minecraft.block.FireBlock
 import net.minecraft.block.RedstoneOreBlock
+import net.minecraft.block.cauldron.LeveledCauldronBlock
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.GuiGraphics
@@ -20,16 +23,21 @@ import net.minecraft.entity.vehicle.BoatEntity
 import net.minecraft.inventory.Inventories
 import net.minecraft.item.ArmorItem
 import net.minecraft.item.BlockItem
+import net.minecraft.item.BucketItem
 import net.minecraft.item.EnchantedBookItem
 import net.minecraft.item.FireChargeItem
 import net.minecraft.item.FlintAndSteelItem
+import net.minecraft.item.HoeItem
+import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.item.PotionItem
+import net.minecraft.item.PowderSnowBucketItem
 import net.minecraft.item.TippedArrowItem
 import net.minecraft.potion.PotionUtil
 import net.minecraft.registry.tag.BiomeTags
 import net.minecraft.sound.SoundCategory
+import net.minecraft.sound.SoundEvent
 import net.minecraft.sound.SoundEvents
 import net.minecraft.text.Text
 import net.minecraft.util.ActionResult
@@ -38,7 +46,10 @@ import net.minecraft.util.Formatting
 import net.minecraft.util.Hand
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.util.math.Axis
+import net.minecraft.util.math.BlockPos
 import net.minecraft.world.GameRules
+import net.minecraft.world.World
+import net.minecraft.world.event.GameEvent
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
 
@@ -283,5 +294,76 @@ object Impl {
         true
     } else {
         false
+    }
+
+    fun dispenseExtra(
+        world: World,
+        blockPos: BlockPos,
+        blockState: BlockState,
+        block: Block,
+        item: Item,
+        cir: CallbackInfoReturnable<ItemStack>
+    ) {
+        if (block == Blocks.CAULDRON) {
+            if ((item is BucketItem && item != Items.BUCKET) || item is PowderSnowBucketItem) {
+                if (!world.isClient) {
+                    when (item) {
+                        Items.WATER_BUCKET -> {
+                            world.setBlockState(
+                                blockPos,
+                                Blocks.WATER_CAULDRON.defaultState.with(LeveledCauldronBlock.LEVEL, 3)
+                            )
+                        }
+                        Items.LAVA_BUCKET -> {
+                            world.setBlockState(blockPos, Blocks.LAVA_CAULDRON.defaultState)
+                        }
+                        Items.POWDER_SNOW_BUCKET -> {
+                            world.setBlockState(
+                                blockPos,
+                                Blocks.POWDER_SNOW_CAULDRON
+                                    .defaultState
+                                    .with(LeveledCauldronBlock.LEVEL, 3)
+                            )
+                        }
+                    }
+                }
+
+                world.playSound(
+                    null, blockPos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0f, 1.0f
+                )
+                world.emitGameEvent(null, GameEvent.FLUID_PLACE, blockPos)
+                cir.returnValue = ItemStack(Items.BUCKET)
+            }
+        } else if (block == Blocks.WATER_CAULDRON || block == Blocks.LAVA_CAULDRON || block == Blocks.POWDER_SNOW_CAULDRON) {
+            if (item == Items.BUCKET) {
+                var bucket: Item? = null
+                var sound: SoundEvent? = null
+
+                when (block) {
+                    Blocks.WATER_CAULDRON -> {
+                        bucket = Items.WATER_BUCKET
+                        sound = SoundEvents.ITEM_BUCKET_FILL
+                    }
+
+                    Blocks.LAVA_CAULDRON -> {
+                        bucket = Items.LAVA_BUCKET
+                        sound = SoundEvents.ITEM_BUCKET_FILL_LAVA
+                    }
+
+                    Blocks.POWDER_SNOW_CAULDRON -> {
+                        bucket = Items.WATER_BUCKET
+                        sound = SoundEvents.ITEM_BUCKET_FILL_POWDER_SNOW
+                    }
+                }
+
+                if (!world.isClient) {
+                    world.setBlockState(blockPos, Blocks.CAULDRON.defaultState)
+                }
+
+                world.playSound(null, blockPos, sound, SoundCategory.BLOCKS, 1.0f, 1.0f)
+                world.emitGameEvent(null, GameEvent.FLUID_PLACE, blockPos)
+                cir.returnValue = ItemStack(bucket)
+            }
+        }
     }
 }

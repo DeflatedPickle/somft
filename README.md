@@ -16,4 +16,5 @@ a vanilla+ mechanics overhaul and additions
 - chainmail & netherite horse armour
 - shows arrows stuck in mobs & lets you pull them out
 - feed squids raw fish to make baby squids
+- dispensers can interact with cauldrons
 

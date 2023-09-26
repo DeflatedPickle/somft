@@ -1,5 +1,6 @@
 {
     "mixins": [
+        "block.dispenser.ItemDispenserBehaviorMixin",
         "block.BlastFurnaceBlockMixin",
         "block.BlockMixin",
         "block.CampfireBlockMixin",
