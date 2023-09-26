@@ -1,0 +1,13 @@
+accessWidener	v1	named
+
+accessible method net/minecraft/block/FireBlock trySpreadingFire (Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;ILnet/minecraft/util/random/RandomGenerator;I)V
+accessible field net/minecraft/entity/Entity random Lnet/minecraft/util/random/RandomGenerator;
+accessible method net/minecraft/entity/vehicle/AbstractMinecartEntity getDroppedItem ()Lnet/minecraft/item/Item;
+accessible method net/minecraft/entity/vehicle/MinecartEntity getDroppedItem ()Lnet/minecraft/item/Item;
+accessible method net/minecraft/entity/vehicle/ChestMinecartEntity getDroppedItem ()Lnet/minecraft/item/Item;
+accessible method net/minecraft/entity/vehicle/CommandBlockMinecartEntity getDroppedItem ()Lnet/minecraft/item/Item;
+accessible method net/minecraft/entity/vehicle/FurnaceMinecartEntity getDroppedItem ()Lnet/minecraft/item/Item;
+accessible method net/minecraft/entity/vehicle/HopperMinecartEntity getDroppedItem ()Lnet/minecraft/item/Item;
+accessible method net/minecraft/entity/vehicle/SpawnerMinecartEntity getDroppedItem ()Lnet/minecraft/item/Item;
+accessible method net/minecraft/entity/vehicle/TntMinecartEntity getDroppedItem ()Lnet/minecraft/item/Item;
+accessible field net/minecraft/item/HorseArmorItem entityTexture Ljava/lang/String;

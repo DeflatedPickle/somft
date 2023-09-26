@@ -1,0 +1,31 @@
+{
+    "mixins": [
+        "block.BlastFurnaceBlockMixin",
+        "block.BlockMixin",
+        "block.CampfireBlockMixin",
+        "block.CandleBlockMixin",
+        "block.FurnaceBlockMixin",
+        "block.MagmaBlockMixin",
+        "block.CandleBlockMixin",
+        "block.SmokerBlockMixin",
+        "block.SweetBerryBushBlockMixin",
+        "block.TorchBlockMixin",
+        "client.gui.hud.InGameHudMixin",
+        "client.gui.screen.TitleScreenMixin",
+        "entity.ai.goal.TemptGoalMixin",
+        "entity.passive.CowEntityMixin",
+        "entity.vehicle.BoatEntityMixin",
+        "entity.vehicle.HopperMinecartEntityMixin",
+        "entity.vehicle.MinecartEntityMixin",
+        "entity.vehicle.TntMinecartEntityMixin",
+        "entity.EntityMixin",
+        "entity.LivingEntityMixin",
+        "item.BlockItemMixin",
+        "item.IgniteEntityMixin"
+    ],
+    "minVersion": "0.8",
+    "package": "${group}.${id}.mixin",
+    "injectors": {"defaultRequire": 1},
+    "compatibilityLevel": "JAVA_${java}",
+    "required": true
+}
