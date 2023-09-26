@@ -30,6 +30,7 @@ import net.minecraft.item.FireChargeItem
 import net.minecraft.item.FlintAndSteelItem
 import net.minecraft.item.HoeItem
 import net.minecraft.item.Item
+import net.minecraft.item.ItemPlacementContext
 import net.minecraft.item.ItemStack
 import net.minecraft.item.ItemUsageContext
 import net.minecraft.item.Items
@@ -411,7 +412,24 @@ object Impl {
                 }
             }
         } else if (world.getBlockState(blockPos.down()).block == Blocks.FARMLAND) {
-            cir.returnValue = itemStack
+            if (itemStack.isFood) {
+                val ctx = ItemPlacementContext(
+                    world, null, null,
+                    itemStack,
+                    BlockHitResult.createMissed(
+                        Vec3d.of(blockPos), Direction.DOWN, blockPos
+                    )
+                )
+
+                if (item is BlockItem) {
+                    val placementState = item.getPlacementState(ctx)
+
+                    if (placementState != null) {
+                        item.place(ctx)
+                        cir.returnValue = itemStack
+                    }
+                }
+            }
         }
     }
 }

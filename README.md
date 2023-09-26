@@ -18,4 +18,5 @@ a vanilla+ mechanics overhaul and additions
 - feed squids raw fish to make baby squids
 - dispensers can interact with cauldrons
 - dispensers can use hoes
+- dispensers can plant crops
 
