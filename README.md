@@ -15,4 +15,5 @@ a vanilla+ mechanics overhaul and additions
 - empty inksack item & ink collection from squids
 - chainmail & netherite horse armour
 - shows arrows stuck in mobs & lets you pull them out
+- feed squids raw fish to make baby squids
 
