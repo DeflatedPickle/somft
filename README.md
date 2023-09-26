@@ -17,4 +17,5 @@ a vanilla+ mechanics overhaul and additions
 - shows arrows stuck in mobs & lets you pull them out
 - feed squids raw fish to make baby squids
 - dispensers can interact with cauldrons
+- dispensers can use hoes
 

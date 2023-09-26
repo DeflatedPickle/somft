@@ -36,6 +36,6 @@ public abstract class ItemDispenserBehaviorMixin {
       cir.setReturnValue(this.dispenseSilently(pointer, stack));
     }
 
-    Impl.INSTANCE.dispenseExtra(world, blockPos, blockState, block, item, cir);
+    Impl.INSTANCE.dispenseExtra(world, blockPos, blockState, block, stack, item, cir);
   }
 }

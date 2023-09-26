@@ -3,6 +3,7 @@
 package com.deflatedpickle.somftcraft
 
 import com.mojang.datafixers.util.Either
+import com.mojang.datafixers.util.Pair
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
@@ -30,6 +31,7 @@ import net.minecraft.item.FlintAndSteelItem
 import net.minecraft.item.HoeItem
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
+import net.minecraft.item.ItemUsageContext
 import net.minecraft.item.Items
 import net.minecraft.item.PotionItem
 import net.minecraft.item.PowderSnowBucketItem
@@ -45,13 +47,18 @@ import net.minecraft.util.DyeColor
 import net.minecraft.util.Formatting
 import net.minecraft.util.Hand
 import net.minecraft.util.collection.DefaultedList
+import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.Axis
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Direction
+import net.minecraft.util.math.Vec3d
 import net.minecraft.world.GameRules
 import net.minecraft.world.World
 import net.minecraft.world.event.GameEvent
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
+import java.util.function.Consumer
+import java.util.function.Predicate
 
 object Impl {
     fun igniteEntity(
@@ -301,6 +308,7 @@ object Impl {
         blockPos: BlockPos,
         blockState: BlockState,
         block: Block,
+        itemStack: ItemStack,
         item: Item,
         cir: CallbackInfoReturnable<ItemStack>
     ) {
@@ -364,6 +372,46 @@ object Impl {
                 world.emitGameEvent(null, GameEvent.FLUID_PLACE, blockPos)
                 cir.returnValue = ItemStack(bucket)
             }
+
+            return
+        }
+
+        val pos = blockPos.down()
+        val state = world.getBlockState(pos)
+        val dBlock = state.block
+        if (dBlock in HoeItem.TILLING_ACTIONS.keys) {
+            if (item is HoeItem) {
+                val pair: Pair<Predicate<ItemUsageContext>, Consumer<ItemUsageContext>>? =
+                    HoeItem.TILLING_ACTIONS[dBlock]
+                if (pair != null) {
+                    val consumer = pair.second as Consumer<ItemUsageContext>
+
+                    world.playSound(
+                        null,
+                        blockPos,
+                        SoundEvents.ITEM_HOE_TILL,
+                        SoundCategory.BLOCKS,
+                        1.0f,
+                        1.0f
+                    )
+                    if (!world.isClient) {
+                        consumer.accept(
+                            ItemUsageContext(
+                                world, null, null,
+                                itemStack,
+                                BlockHitResult.createMissed(
+                                    Vec3d.of(pos), Direction.DOWN, pos
+                                )
+                            )
+                        )
+                        itemStack.damage(1, world.random, null)
+                    }
+
+                    cir.returnValue = itemStack
+                }
+            }
+        } else if (world.getBlockState(blockPos.down()).block == Blocks.FARMLAND) {
+            cir.returnValue = itemStack
         }
     }
 }

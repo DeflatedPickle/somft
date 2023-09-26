@@ -17,3 +17,4 @@ accessible method net/minecraft/client/render/entity/model/AnimalModel getHeadPa
 accessible method net/minecraft/client/render/entity/model/AnimalModel getBodyParts ()Ljava/lang/Iterable;
 accessible method net/minecraft/block/RedstoneOreBlock spawnParticles (Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;)V
 accessible field net/minecraft/item/BucketItem fluid Lnet/minecraft/fluid/Fluid;
+accessible field net/minecraft/item/HoeItem TILLING_ACTIONS Ljava/util/Map;
