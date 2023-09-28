@@ -480,6 +480,19 @@ object Impl {
             }
         }
 
+        dispenserCow(world, blockPos, blockState, block, itemStack, item, cir)
+        dispenserSheep(world, blockPos, blockState, block, itemStack, item, cir)
+    }
+
+    private fun dispenserCow(
+        world: World,
+        blockPos: BlockPos,
+        blockState: BlockState,
+        block: Block,
+        itemStack: ItemStack,
+        item: Item,
+        cir: CallbackInfoReturnable<ItemStack>
+    ) {
         for (
             cow in world
                 .getEntitiesByClass(
@@ -497,7 +510,17 @@ object Impl {
                 }
             }
         }
+    }
 
+    private fun dispenserSheep(
+        world: World,
+        blockPos: BlockPos,
+        blockState: BlockState,
+        block: Block,
+        itemStack: ItemStack,
+        item: Item,
+        cir: CallbackInfoReturnable<ItemStack>
+    ) {
         for (
             sheep in world
                 .getEntitiesByClass(
@@ -544,26 +567,25 @@ object Impl {
         val state = world.getBlockState(blockPos)
 
         if (state.block == Blocks.PUMPKIN) {
-            println("trigger")
-            val direction2 = dispenserState.get(DispenserBlock.FACING).opposite
+            val facing = dispenserState.get(DispenserBlock.FACING).opposite
 
             world.playSound(null, blockPos, SoundEvents.BLOCK_PUMPKIN_CARVE, SoundCategory.BLOCKS, 1.0f, 1.0f)
             world.setBlockState(
                 blockPos,
-                Blocks.CARVED_PUMPKIN.defaultState.with(CarvedPumpkinBlock.FACING, direction2),
+                Blocks.CARVED_PUMPKIN.defaultState.with(CarvedPumpkinBlock.FACING, facing),
                 Block.NOTIFY_ALL or Block.REDRAW_ON_MAIN_THREAD
             )
             val itemEntity = ItemEntity(
                 world,
-                blockPos.x.toDouble() + 0.5 + direction2.offsetX.toDouble() * 0.65,
+                blockPos.x.toDouble() + 0.5 + facing.offsetX.toDouble() * 0.65,
                 blockPos.y.toDouble() + 0.1,
-                blockPos.z.toDouble() + 0.5 + direction2.offsetZ.toDouble() * 0.65,
+                blockPos.z.toDouble() + 0.5 + facing.offsetZ.toDouble() * 0.65,
                 ItemStack(Items.PUMPKIN_SEEDS, 4)
             )
             itemEntity.setVelocity(
-                0.05 * direction2.offsetX.toDouble() + world.random.nextDouble() * 0.02,
+                0.05 * facing.offsetX.toDouble() + world.random.nextDouble() * 0.02,
                 0.05,
-                0.05 * direction2.offsetZ.toDouble() + world.random.nextDouble() * 0.02
+                0.05 * facing.offsetZ.toDouble() + world.random.nextDouble() * 0.02
             )
             world.spawnEntity(itemEntity)
             world.emitGameEvent(null, GameEvent.SHEAR, blockPos)
