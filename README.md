@@ -21,4 +21,5 @@ a vanilla+ mechanics overhaul and additions
 - dispensers can plant crops
 - dispensers can milk cows
 - dispensers can dye sheep
+- dispensers can carve pumpkins
 

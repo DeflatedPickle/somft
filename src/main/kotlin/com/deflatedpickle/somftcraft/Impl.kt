@@ -8,14 +8,17 @@ import com.mojang.datafixers.util.Pair
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
+import net.minecraft.block.CarvedPumpkinBlock
 import net.minecraft.block.FireBlock
 import net.minecraft.block.RedstoneOreBlock
 import net.minecraft.block.cauldron.LeveledCauldronBlock
+import net.minecraft.block.dispenser.DispenserBlock
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.Entity
+import net.minecraft.entity.ItemEntity
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.damage.DamageSource
 import net.minecraft.entity.effect.StatusEffectUtil
@@ -40,10 +43,12 @@ import net.minecraft.item.ItemUsageContext
 import net.minecraft.item.Items
 import net.minecraft.item.PotionItem
 import net.minecraft.item.PowderSnowBucketItem
+import net.minecraft.item.ShearsItem
 import net.minecraft.item.TippedArrowItem
 import net.minecraft.particle.ParticleTypes
 import net.minecraft.potion.PotionUtil
 import net.minecraft.registry.tag.BiomeTags
+import net.minecraft.server.world.ServerWorld
 import net.minecraft.sound.SoundCategory
 import net.minecraft.sound.SoundEvent
 import net.minecraft.sound.SoundEvents
@@ -55,6 +60,7 @@ import net.minecraft.util.Hand
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.Axis
+import net.minecraft.util.math.BlockPointer
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.Direction
@@ -168,7 +174,6 @@ object Impl {
 
         if (currentStack.item == Items.SHULKER_BOX) {
             BlockItem.getBlockEntityNbtFromStack(currentStack)?.let { nbtCompound ->
-                println(nbtCompound)
                 if (nbtCompound.contains("Items")) {
                     val defaultedList = DefaultedList.ofSize(27, ItemStack.EMPTY)
                     Inventories.readNbt(nbtCompound, defaultedList)
@@ -381,6 +386,39 @@ object Impl {
             }
 
             return
+        } else if (block == Blocks.PUMPKIN) {
+            if (item is ShearsItem) {
+                if (!world.isClient) {
+                    val facing = blockState.get(DispenserBlock.FACING).opposite
+
+                    world.playSound(null, blockPos, SoundEvents.BLOCK_PUMPKIN_CARVE, SoundCategory.BLOCKS, 1.0f, 1.0f)
+                    world.setBlockState(
+                        blockPos,
+                        Blocks.CARVED_PUMPKIN.defaultState.with(
+                            CarvedPumpkinBlock.FACING,
+                            facing
+                        ),
+                        Block.NOTIFY_ALL or Block.REDRAW_ON_MAIN_THREAD
+                    )
+                    val itemEntity = ItemEntity(
+                        world,
+                        blockPos.x.toDouble() + 0.5 + facing.offsetX.toDouble() * 0.65,
+                        blockPos.y.toDouble() + 0.1,
+                        blockPos.z.toDouble() + 0.5 + facing.offsetZ.toDouble() * 0.65,
+                        ItemStack(Items.PUMPKIN_SEEDS, 4)
+                    )
+                    itemEntity.setVelocity(
+                        0.05 * facing.offsetX.toDouble() + world.random.nextDouble() * 0.02,
+                        0.05,
+                        0.05 * facing.offsetZ.toDouble() + world.random.nextDouble() * 0.02
+                    )
+                    world.spawnEntity(itemEntity)
+                    itemStack.damage(1, world.random, null)
+                    world.emitGameEvent(null, GameEvent.SHEAR, blockPos)
+                }
+
+                cir.returnValue = itemStack
+            }
         }
 
         val pos = blockPos.down()
@@ -494,5 +532,44 @@ object Impl {
                     f
                 )
         }
+    }
+
+    fun dispenseShears(
+        pointer: BlockPointer,
+        world: ServerWorld
+    ): Boolean {
+        val dispenserPos = pointer.pos
+        val dispenserState = world.getBlockState(dispenserPos)
+        val blockPos = pointer.pos.offset(pointer.blockState.get(DispenserBlock.FACING))
+        val state = world.getBlockState(blockPos)
+
+        if (state.block == Blocks.PUMPKIN) {
+            println("trigger")
+            val direction2 = dispenserState.get(DispenserBlock.FACING).opposite
+
+            world.playSound(null, blockPos, SoundEvents.BLOCK_PUMPKIN_CARVE, SoundCategory.BLOCKS, 1.0f, 1.0f)
+            world.setBlockState(
+                blockPos,
+                Blocks.CARVED_PUMPKIN.defaultState.with(CarvedPumpkinBlock.FACING, direction2),
+                Block.NOTIFY_ALL or Block.REDRAW_ON_MAIN_THREAD
+            )
+            val itemEntity = ItemEntity(
+                world,
+                blockPos.x.toDouble() + 0.5 + direction2.offsetX.toDouble() * 0.65,
+                blockPos.y.toDouble() + 0.1,
+                blockPos.z.toDouble() + 0.5 + direction2.offsetZ.toDouble() * 0.65,
+                ItemStack(Items.PUMPKIN_SEEDS, 4)
+            )
+            itemEntity.setVelocity(
+                0.05 * direction2.offsetX.toDouble() + world.random.nextDouble() * 0.02,
+                0.05,
+                0.05 * direction2.offsetZ.toDouble() + world.random.nextDouble() * 0.02
+            )
+            world.spawnEntity(itemEntity)
+            world.emitGameEvent(null, GameEvent.SHEAR, blockPos)
+
+            return true
+        }
+        return false
     }
 }
