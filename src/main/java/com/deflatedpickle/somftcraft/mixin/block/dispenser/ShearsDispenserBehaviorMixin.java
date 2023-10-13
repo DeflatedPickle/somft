@@ -30,7 +30,7 @@ public abstract class ShearsDispenserBehaviorMixin extends FallibleItemDispenser
       ItemStack stack,
       CallbackInfoReturnable<ItemStack> cir,
       ServerWorld serverWorld) {
-    setSuccess(Impl.INSTANCE.dispenseShears(pointer, serverWorld));
+    setSuccess(Impl.INSTANCE.dispenserShears(pointer, serverWorld));
     if (this.isSuccess() && stack.damage(1, serverWorld.getRandom(), null)) {
       stack.setCount(0);
       cir.setReturnValue(stack);

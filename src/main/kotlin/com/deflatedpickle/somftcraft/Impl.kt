@@ -1,5 +1,7 @@
 /* Copyright (c) 2023 DeflatedPickle under the GPLv3 license */
 
+@file:Suppress("MemberVisibilityCanBePrivate", "UNUSED_PARAMETER")
+
 package com.deflatedpickle.somftcraft
 
 import com.deflatedpickle.somftcraft.api.Milkable
@@ -16,15 +18,77 @@ import net.minecraft.block.dispenser.DispenserBlock
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.screen.TitleScreen
 import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.entity.AreaEffectCloudEntity
 import net.minecraft.entity.Entity
 import net.minecraft.entity.ItemEntity
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.damage.DamageSource
+import net.minecraft.entity.data.DataTracker
+import net.minecraft.entity.data.TrackedData
+import net.minecraft.entity.decoration.ArmorStandEntity
+import net.minecraft.entity.decoration.DisplayEntity
+import net.minecraft.entity.decoration.ItemFrameEntity
+import net.minecraft.entity.decoration.painting.PaintingEntity
 import net.minecraft.entity.effect.StatusEffectUtil
+import net.minecraft.entity.mob.BlazeEntity
+import net.minecraft.entity.mob.CreeperEntity
+import net.minecraft.entity.mob.EndermanEntity
+import net.minecraft.entity.mob.GhastEntity
+import net.minecraft.entity.mob.GuardianEntity
+import net.minecraft.entity.mob.HoglinEntity
+import net.minecraft.entity.mob.MobEntity
+import net.minecraft.entity.mob.PhantomEntity
+import net.minecraft.entity.mob.PiglinEntity
+import net.minecraft.entity.mob.PillagerEntity
+import net.minecraft.entity.mob.SkeletonEntity
+import net.minecraft.entity.mob.SpellcastingIllagerEntity
+import net.minecraft.entity.mob.SpiderEntity
+import net.minecraft.entity.mob.VexEntity
+import net.minecraft.entity.mob.ZoglinEntity
+import net.minecraft.entity.mob.ZombieEntity
+import net.minecraft.entity.mob.ZombieVillagerEntity
+import net.minecraft.entity.mob.warden.WardenEntity
+import net.minecraft.entity.passive.AbstractDonkeyEntity
+import net.minecraft.entity.passive.AllayEntity
+import net.minecraft.entity.passive.AxolotlEntity
+import net.minecraft.entity.passive.BatEntity
+import net.minecraft.entity.passive.BeeEntity
+import net.minecraft.entity.passive.CamelEntity
+import net.minecraft.entity.passive.CatEntity
 import net.minecraft.entity.passive.CowEntity
+import net.minecraft.entity.passive.DolphinEntity
+import net.minecraft.entity.passive.FishEntity
+import net.minecraft.entity.passive.FoxEntity
+import net.minecraft.entity.passive.FrogEntity
+import net.minecraft.entity.passive.GlowSquidEntity
+import net.minecraft.entity.passive.GoatEntity
+import net.minecraft.entity.passive.HorseBaseEntity
+import net.minecraft.entity.passive.HorseEntity
+import net.minecraft.entity.passive.LlamaEntity
+import net.minecraft.entity.passive.MerchantEntity
+import net.minecraft.entity.passive.MooshroomEntity
+import net.minecraft.entity.passive.OcelotEntity
+import net.minecraft.entity.passive.PandaEntity
+import net.minecraft.entity.passive.ParrotEntity
+import net.minecraft.entity.passive.PassiveEntity
+import net.minecraft.entity.passive.PigEntity
+import net.minecraft.entity.passive.PolarBearEntity
+import net.minecraft.entity.passive.PufferfishEntity
+import net.minecraft.entity.passive.RabbitEntity
 import net.minecraft.entity.passive.SheepEntity
+import net.minecraft.entity.passive.SnifferEntity
+import net.minecraft.entity.passive.StriderEntity
+import net.minecraft.entity.passive.TameableEntity
+import net.minecraft.entity.passive.TropicalFishEntity
+import net.minecraft.entity.passive.TurtleEntity
+import net.minecraft.entity.passive.VillagerEntity
+import net.minecraft.entity.passive.WolfEntity
 import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.entity.projectile.AbstractFireballEntity
+import net.minecraft.entity.projectile.ArrowEntity
+import net.minecraft.entity.raid.RaiderEntity
 import net.minecraft.entity.vehicle.AbstractMinecartEntity
 import net.minecraft.entity.vehicle.BoatEntity
 import net.minecraft.inventory.Inventories
@@ -65,7 +129,6 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3d
-import net.minecraft.world.GameRules
 import net.minecraft.world.World
 import net.minecraft.world.event.GameEvent
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo
@@ -117,7 +180,7 @@ object Impl {
         entity.world.let { world ->
             if (!world.isClient &&
                 entity.isOnFire &&
-                world.gameRules.getBoolean(GameRules.DO_FIRE_TICK)
+                world.gameRules.getBoolean(SomftCraft.DO_MOB_FIRE_GRIEF)
             ) {
                 val increase = if (world.getBiome(entity.blockPos).isIn(BiomeTags.INCREASED_FIRE_BURNOUT)) -50 else 0
                 (Blocks.FIRE as FireBlock).trySpreadingFire(world, entity.blockPos.down(), 300 + increase, entity.random, 0)
@@ -126,9 +189,13 @@ object Impl {
     }
 
     fun drawExtraTitleComponents(
+        screen: TitleScreen,
         graphics: GuiGraphics,
+        mouseX: Int,
+        mouseY: Int,
         textRenderer: TextRenderer,
         width: Int,
+        height: Int,
         alpha: Int
     ) {
         graphics.matrices.push()
@@ -557,7 +624,7 @@ object Impl {
         }
     }
 
-    fun dispenseShears(
+    fun dispenserShears(
         pointer: BlockPointer,
         world: ServerWorld
     ): Boolean {
@@ -594,4 +661,177 @@ object Impl {
         }
         return false
     }
+
+    fun translateAndHideDebugText(instance: MutableList<String>, e: String): Boolean {
+        return if (MinecraftClient.getInstance().player?.isCreativeLevelTwoOp == true) {
+            instance.add(e)
+        } else false
+    }
+
+    fun getTrackedDataName(trackedData: TrackedData<*>) = when (trackedData) {
+        Entity.FLAGS -> "Flags"
+        Entity.AIR -> "Air"
+        Entity.CUSTOM_NAME -> "Custom Name"
+        Entity.NAME_VISIBLE -> "Name Visible"
+        Entity.SILENT -> "Silent"
+        Entity.NO_GRAVITY -> "No Gravity"
+        Entity.POSE -> "Pose"
+        Entity.FROZEN_TICKS -> "Frozen Ticks"
+        LivingEntity.LIVING_FLAGS -> "Living Flags"
+        LivingEntity.HEALTH -> "Health"
+        LivingEntity.POTION_SWIRLS_COLOR -> "Potion Swirls Color"
+        LivingEntity.POTION_SWIRLS_AMBIENT -> "Potion Swirls Ambient"
+        LivingEntity.STUCK_ARROW_COUNT -> "Stuck Arrow Count"
+        LivingEntity.STINGER_COUNT -> "Stinger Count"
+        LivingEntity.SLEEPING_POSITION -> "Sleeping Position"
+        MobEntity.MOB_FLAGS -> "Mob Flags"
+        PassiveEntity.CHILD -> "Child"
+        AbstractDonkeyEntity.CHEST -> "Chest"
+        AxolotlEntity.VARIANT -> "Variant"
+        AxolotlEntity.PLAYING_DEAD -> "Playing Dead"
+        AxolotlEntity.FROM_BUCKET -> "From Bucket"
+        BeeEntity.BEE_FLAGS -> "Bee Flags"
+        BeeEntity.ANGER -> "Anger"
+        CamelEntity.DASHING -> "Dashing"
+        CamelEntity.LAST_ANIMATION_TICK -> "Last Animation Tick"
+        CatEntity.VARIANT -> "Variant"
+        CatEntity.IN_SLEEPING_POSE -> "In Sleeping Pose"
+        CatEntity.HEAD_DOWN -> "Head Down"
+        CatEntity.COLLAR_COLOR -> "Collar Color"
+        FoxEntity.TYPE -> "Type"
+        FoxEntity.FOX_FLAGS -> "Fox Flags"
+        FrogEntity.TYPE -> "Type"
+        FrogEntity.TARGET_ENTITY_ID -> "Target Entity ID"
+        GoatEntity.SCREAMING -> "Screaming"
+        GoatEntity.HAS_LEFT_HORN -> "Has Left Horn"
+        GoatEntity.HAS_RIGHT_HORN -> "Has Right Horn"
+        HoglinEntity.BABY -> "Baby"
+        HorseBaseEntity.HORSE_FLAGS -> "Horse Flags"
+        HorseEntity.VARIANT -> "Variant"
+        LlamaEntity.STRENGTH -> "Strength"
+        LlamaEntity.CARPET_COLOR -> "Carpet Color"
+        LlamaEntity.VARIANT -> "Variant"
+        MooshroomEntity.TYPE -> "Type"
+        OcelotEntity.TRUSTING -> "Trusting"
+        PandaEntity.ASK_FOR_BAMBOO_TICKS -> "Ask For Bamboo Ticks"
+        PandaEntity.SNEEZE_PROGRESS -> "Sneeze Progress"
+        PandaEntity.EATING_TICKS -> "Eating Ticks"
+        PandaEntity.MAIN_GENE -> "Main Gene"
+        PandaEntity.HIDDEN_GENE -> "Hidden Gene"
+        PandaEntity.PANDA_FLAGS -> "Panda Flags"
+        ParrotEntity.VARIANT -> "Variant"
+        PigEntity.SADDLED -> "Saddled"
+        PigEntity.BOOST_TIME -> "Boost Time"
+        PolarBearEntity.WARNING -> "Warning"
+        RabbitEntity.RABBIT_TYPE -> "Rabbit Type"
+        SheepEntity.COLOR -> "Color"
+        SnifferEntity.STATE -> "State"
+        SnifferEntity.DROP_SEED_AT_TICK -> "Drop Seed At Tick"
+        StriderEntity.BOOST_TIME -> "Boost Time"
+        StriderEntity.COLD -> "Cold"
+        StriderEntity.SADDLED -> "Saddled"
+        TameableEntity.TAMEABLE_FLAGS -> "Tameable Flags"
+        TameableEntity.OWNER_UUID -> "Owner UUID"
+        TurtleEntity.HOME_POS -> "Home Pos"
+        TurtleEntity.HAS_EGG -> "Has Egg"
+        TurtleEntity.DIGGING_SAND -> "Digging Sand"
+        TurtleEntity.TRAVEL_POS -> "Travel Pos"
+        TurtleEntity.LAND_BOUND -> "Land Bound"
+        TurtleEntity.ACTIVELY_TRAVELING -> "Actively Traveling"
+        WolfEntity.BEGGING -> "Begging"
+        WolfEntity.COLLAR_COLOR -> "Collar Color"
+        WolfEntity.ANGER_TIME -> "Anger Time"
+        ItemFrameEntity.ITEM_STACK -> "Item Stack"
+        ItemFrameEntity.ROTATION -> "Rotation"
+        PaintingEntity.VARIANT -> "Variant"
+        AbstractFireballEntity.ITEM -> "Item"
+        AbstractMinecartEntity.DAMAGE_WOBBLE_TICKS -> "Damage Wobble Ticks"
+        AbstractMinecartEntity.DAMAGE_WOBBLE_SIDE -> "Damage Wobble Side"
+        AbstractMinecartEntity.DAMAGE_WOBBLE_STRENGTH -> "Damage Wobble Strength"
+        AbstractMinecartEntity.CUSTOM_BLOCK_ID -> "Custom Block ID"
+        AbstractMinecartEntity.CUSTOM_BLOCK_OFFSET -> "Custom Block Offset"
+        AbstractMinecartEntity.CUSTOM_BLOCK_PRESENT -> "Custom Block Present"
+        PiglinEntity.IMMUNE_TO_ZOMBIFICATION -> "Immune To Zombification"
+        AllayEntity.DANCING -> "Dancing"
+        AllayEntity.CAN_DUPLICATE -> "Can Duplicate"
+        AreaEffectCloudEntity.RADIUS -> "Radius"
+        AreaEffectCloudEntity.COLOR -> "Color"
+        AreaEffectCloudEntity.WAITING -> "Waiting"
+        AreaEffectCloudEntity.PARTICLE_ID -> "Particle ID"
+        ArmorStandEntity.ARMOR_STAND_FLAGS -> "Armor Stand Flags"
+        ArmorStandEntity.TRACKER_HEAD_ROTATION -> "Head Rotation"
+        ArmorStandEntity.TRACKER_BODY_ROTATION -> "Body Rotation"
+        ArmorStandEntity.TRACKER_LEFT_ARM_ROTATION -> "Left Arm Rotation"
+        ArmorStandEntity.TRACKER_RIGHT_ARM_ROTATION -> "Right Arm Rotation"
+        ArmorStandEntity.TRACKER_LEFT_LEG_ROTATION -> "Left Leg Rotation"
+        ArmorStandEntity.TRACKER_RIGHT_LEG_ROTATION -> "Right Leg Rotation"
+        ArrowEntity.COLOR -> "Color"
+        BatEntity.BAT_FLAGS -> "Bat Flags"
+        BlazeEntity.BLAZE_FLAGS -> "Blaze Flags"
+        CreeperEntity.FUSE_SPEED -> "Fuse Speed"
+        CreeperEntity.CHARGED -> "Charged"
+        CreeperEntity.IGNITED -> "Ignited"
+        EndermanEntity.CARRIED_BLOCK -> "Carried Block"
+        EndermanEntity.ANGRY -> "Angry"
+        EndermanEntity.PROVOKED -> "Provoked"
+        GuardianEntity.SPIKES_RETRACTED -> "Spikes Retracted"
+        GuardianEntity.BEAM_TARGET_ID -> "Beam Target ID"
+        PiglinEntity.BABY -> "Baby"
+        PiglinEntity.CHARGING -> "Charging"
+        PiglinEntity.DANCING -> "Dancing"
+        PillagerEntity.CHARGING -> "Charging"
+        RaiderEntity.CELEBRATING -> "Celebrating"
+        SkeletonEntity.CONVERTING -> "Converting"
+        SpellcastingIllagerEntity.SPELL -> "Spell"
+        SpiderEntity.SPIDER_FLAGS -> "Spider Flags"
+        VexEntity.VEX_FLAGS -> "Vex Flags"
+        WardenEntity.ANGER_LEVEL -> "Anger Level"
+        ZoglinEntity.BABY -> "Baby"
+        ZombieEntity.BABY -> "Baby"
+        ZombieEntity.ZOMBIE_TYPE -> "Zombie Time"
+        ZombieEntity.CONVERTING_IN_WATER -> "Converting In Water"
+        ZombieVillagerEntity.CONVERTING -> "Converting"
+        ZombieVillagerEntity.VILLAGER_DATA -> "Villager Data"
+        BoatEntity.DAMAGE_WOBBLE_TICKS -> "Damage Wobble Ticks"
+        BoatEntity.DAMAGE_WOBBLE_SIDE -> "Damage Wobble Side"
+        BoatEntity.DAMAGE_WOBBLE_STRENGTH -> "Damage Wobble Strength"
+        BoatEntity.BOAT_VARIANT -> "Boat Variant"
+        BoatEntity.LEFT_PADDLE_MOVING -> "Left Paddle Moving"
+        BoatEntity.RIGHT_PADDLE_MOVING -> "Right Paddle Moving"
+        BoatEntity.BUBBLE_WOBBLE_TICKS -> "Bubble Wobble Ticks"
+        DisplayEntity.TextDisplayEntity.TEXT -> "Text"
+        DisplayEntity.TextDisplayEntity.LINE_WIDTH -> "Line Width"
+        DisplayEntity.TextDisplayEntity.BACKGROUND_COLOR -> "Background Color"
+        DisplayEntity.BlockDisplayEntity.STATE -> "State"
+        DisplayEntity.START_INTERPOLATION -> "Start Interpolation"
+        DisplayEntity.INTERPOLATION_DURATION -> "Interpolation Duration"
+        DisplayEntity.TRANSLATION -> "Translation"
+        DisplayEntity.SCALE -> "Scale"
+        DisplayEntity.LEFT_ROTATION -> "Left Rotation"
+        DisplayEntity.RIGHT_ROTATION -> "Right Rotation"
+        DisplayEntity.BILLBOARD_RENDER_CONSTRAINTS -> "Billboard Render Constraints"
+        DisplayEntity.BRIGHTNESS_OVERRIDE -> "Brightness Override"
+        DisplayEntity.VIEW_RANGE -> "View Range"
+        DisplayEntity.SHADOW_RADIUS -> "Shadow Radius"
+        DisplayEntity.SHADOW_STRENGTH -> "Shadow Strength"
+        DisplayEntity.WIDTH -> "Width"
+        DisplayEntity.HEIGHT -> "Height"
+        DisplayEntity.GLOW_COLOR_OVERRIDE -> "Glow Color Override"
+        DisplayEntity.ItemDisplayEntity.STACK -> "Stack"
+        DisplayEntity.ItemDisplayEntity.TRANSFORMATION_MODE -> "Transformation Mode"
+        FishEntity.FROM_BUCKET -> "From Bucket"
+        GhastEntity.SHOOTING -> "Shooting"
+        PhantomEntity.SIZE -> "Size"
+        DolphinEntity.TREASURE_POS -> "Treasure Pos"
+        DolphinEntity.HAS_FISH -> "Has Fish"
+        DolphinEntity.MOISTNESS -> "Moistness"
+        GlowSquidEntity.DARK_TICKS_REMAINING -> "Dark Ticks Remaining"
+        PufferfishEntity.PUFF_STATE -> "Puff State"
+        TropicalFishEntity.VARIANT -> "Variant"
+        VillagerEntity.VILLAGER_DATA -> "Villager Data"
+        MerchantEntity.HEAD_ROLLING_TIME_LEFT -> "Head Rolling Time Left"
+        else -> ""
+    }
+
+    fun entryToString(entry: DataTracker.Entry<*>) = "${getTrackedDataName(entry.data)} (${entry.data.id}): ${entry.get()}"
 }

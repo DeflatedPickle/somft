@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+@SuppressWarnings("UnusedMixin")
 @Mixin(Item.class)
 public abstract class ItemMixin {
   @Inject(method = "use", at = @At("HEAD"), cancellable = true)

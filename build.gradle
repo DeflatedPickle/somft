@@ -35,6 +35,11 @@ repositories {
 	}
 
 	maven {
+		name 'TerraformersMC'
+		url 'https://maven.terraformersmc.com/releases/'
+	}
+
+	maven {
 		name 'JitPack'
 		url 'https://jitpack.io'
 	}
@@ -50,6 +55,10 @@ dependencies {
 
 	modImplementation(libs.fabric.language.kotlin) {
 		exclude(group: "net.fabricmc")
+	}
+
+	modImplementation(libs.mod.menu) {
+		transitive = false
 	}
 
 	if (!local.length()) {
@@ -118,14 +127,8 @@ spotless {
 		licenseHeader "/* ${expand_license(license_header)} */\n\n"
 	}
 
-	json {
-		target 'src/**/*.json'
-
-		simple()
-	}
-
 	format 'misc', {
-		target '*.md', '.gitignore'
+		target '.gitignore'
 
 		trimTrailingWhitespace()
 		indentWithTabs()

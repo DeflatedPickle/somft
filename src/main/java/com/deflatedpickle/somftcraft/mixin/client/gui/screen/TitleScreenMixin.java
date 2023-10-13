@@ -38,6 +38,7 @@ public abstract class TitleScreenMixin extends Screen {
       float f,
       float g,
       int i) {
-    Impl.INSTANCE.drawExtraTitleComponents(graphics, textRenderer, width, i);
+    Impl.INSTANCE.drawExtraTitleComponents(
+        (TitleScreen) (Object) this, graphics, mouseX, mouseY, textRenderer, width, height, i);
   }
 }

@@ -8,6 +8,8 @@ import com.deflatedpickle.somftcraft.block.dispenser.HorseArmorDispenserBehavior
 import com.deflatedpickle.somftcraft.block.dispenser.TorchDispenserBehavior
 import com.deflatedpickle.somftcraft.item.EmptyInkSacItem
 import com.deflatedpickle.somftcraft.item.HorseArmorItemExt
+import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory
+import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents
 import net.fabricmc.fabric.api.loot.v2.LootTableEvents
 import net.minecraft.block.dispenser.DispenserBlock
@@ -20,12 +22,16 @@ import net.minecraft.loot.entry.ItemEntry
 import net.minecraft.registry.Registries
 import net.minecraft.registry.Registry
 import net.minecraft.util.Identifier
+import net.minecraft.world.GameRules
 import org.quiltmc.loader.api.ModContainer
 import org.quiltmc.qsl.base.api.entrypoint.ModInitializer
 
-object somftcraft : ModInitializer {
+object SomftCraft : ModInitializer {
     val CHAINMAIL_HORSE_ARMOUR = HorseArmorItemExt(6, "chainmail", Item.Settings().maxCount(1))
     val NETHERITE_HORSE_ARMOUR = HorseArmorItemExt(12, "netherite", Item.Settings().maxCount(1))
+
+    val DO_BLOCK_FIRE_GRIEF = GameRuleRegistry.register("doBlockFireGrief", GameRules.Category.MISC, GameRuleFactory.createBooleanRule(true))
+    val DO_MOB_FIRE_GRIEF = GameRuleRegistry.register("doMobFireGrief", GameRules.Category.MOBS, GameRuleFactory.createBooleanRule(true))
 
     override fun onInitialize(mod: ModContainer) {
         Registry.register(Registries.ITEM, Identifier(mod.metadata().id(), "empty_ink_sac"), EmptyInkSacItem)

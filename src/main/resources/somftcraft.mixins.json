@@ -12,6 +12,7 @@
         "block.SmokerBlockMixin",
         "block.SweetBerryBushBlockMixin",
         "block.TorchBlockMixin",
+        "client.gui.hud.DebugHudMixin",
         "client.gui.hud.InGameHudMixin",
         "client.gui.screen.TitleScreenMixin",
         "client.render.entity.model.AnimalModelMixin",

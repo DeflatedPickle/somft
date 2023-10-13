@@ -2,6 +2,7 @@
 
 package com.deflatedpickle.somftcraft.mixin.block;
 
+import com.deflatedpickle.somftcraft.SomftCraft;
 import com.deflatedpickle.somftcraft.api.DirectionalFireSpreader;
 import com.deflatedpickle.somftcraft.api.FireSpreader;
 import net.minecraft.block.*;
@@ -34,7 +35,8 @@ public abstract class BlockMixin extends AbstractBlock {
       BlockState state, ServerWorld world, BlockPos pos, RandomGenerator random) {
     super.scheduledTick(state, world, pos, random);
 
-    if (state.getBlock() instanceof FireSpreader fireSpreader) {
+    if (state.getBlock() instanceof FireSpreader fireSpreader
+        && world.getGameRules().getBoolean(SomftCraft.INSTANCE.getDO_BLOCK_FIRE_GRIEF())) {
       var fire = (FireBlock) Blocks.FIRE;
 
       if (fireSpreader instanceof DirectionalFireSpreader directionalFireSpreader) {

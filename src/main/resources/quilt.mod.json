@@ -34,9 +34,14 @@
             }
         ],
         "intermediate_mappings": "net.fabricmc:intermediary",
-        "entrypoints": {"init": [{
+        "entrypoints": {
+            "client_init": [{
+                "adapter": "kotlin",
+                "value": "com.deflatedpickle.somftcraft.SomftCraftClient"
+            }],
+            "init": [{
             "adapter": "kotlin",
-            "value": "${group}.${id}.${name}"
+            "value": "com.deflatedpickle.somftcraft.SomftCraft"
         }]},
         "id": "${id}",
         "version": "${version}",
