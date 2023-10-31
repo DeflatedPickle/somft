@@ -177,6 +177,7 @@ public abstract class SquidEntityMixin extends WaterCreatureEntity implements Br
     }
   }
 
+  @Override
   public void writeCustomDataToNbt(NbtCompound nbt) {
     super.writeCustomDataToNbt(nbt);
     nbt.putInt("Age", this.getBreedingAge());

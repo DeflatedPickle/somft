@@ -3,9 +3,7 @@
 package com.deflatedpickle.somftcraft.mixin.client.gui.hud;
 
 import com.deflatedpickle.somftcraft.Impl;
-import com.deflatedpickle.somftcraft.client.gui.hud.ControlsHud;
-import com.deflatedpickle.somftcraft.client.gui.hud.MiniMeHud;
-import com.deflatedpickle.somftcraft.client.gui.hud.ToolsHud;
+import com.deflatedpickle.somftcraft.client.gui.hud.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.hud.InGameHud;

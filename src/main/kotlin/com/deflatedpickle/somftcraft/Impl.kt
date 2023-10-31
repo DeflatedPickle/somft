@@ -5,6 +5,9 @@
 package com.deflatedpickle.somftcraft
 
 import com.deflatedpickle.somftcraft.api.Milkable
+import com.deflatedpickle.somftcraft.client.tooltip.CentredTooltipPositioner
+import com.deflatedpickle.somftcraft.screen.ArmorSlot
+import com.deflatedpickle.somftcraft.screen.OffHandSlot
 import com.mojang.datafixers.util.Either
 import com.mojang.datafixers.util.Pair
 import net.minecraft.block.Block
@@ -18,7 +21,12 @@ import net.minecraft.block.dispenser.DispenserBlock
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.screen.TitleScreen
+import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen
+import net.minecraft.client.gui.screen.ingame.HandledScreen
+import net.minecraft.client.gui.tooltip.TooltipComponent
+import net.minecraft.client.resource.language.I18n
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.AreaEffectCloudEntity
 import net.minecraft.entity.Entity
@@ -86,6 +94,7 @@ import net.minecraft.entity.passive.TurtleEntity
 import net.minecraft.entity.passive.VillagerEntity
 import net.minecraft.entity.passive.WolfEntity
 import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.entity.projectile.AbstractFireballEntity
 import net.minecraft.entity.projectile.ArrowEntity
 import net.minecraft.entity.raid.RaiderEntity
@@ -93,6 +102,7 @@ import net.minecraft.entity.vehicle.AbstractMinecartEntity
 import net.minecraft.entity.vehicle.BoatEntity
 import net.minecraft.inventory.Inventories
 import net.minecraft.item.ArmorItem
+import net.minecraft.item.ArmorMaterials
 import net.minecraft.item.BlockItem
 import net.minecraft.item.BucketItem
 import net.minecraft.item.DyeItem
@@ -101,6 +111,7 @@ import net.minecraft.item.FireChargeItem
 import net.minecraft.item.FlintAndSteelItem
 import net.minecraft.item.HoeItem
 import net.minecraft.item.Item
+import net.minecraft.item.ItemGroups
 import net.minecraft.item.ItemPlacementContext
 import net.minecraft.item.ItemStack
 import net.minecraft.item.ItemUsageContext
@@ -112,6 +123,8 @@ import net.minecraft.item.TippedArrowItem
 import net.minecraft.particle.ParticleTypes
 import net.minecraft.potion.PotionUtil
 import net.minecraft.registry.tag.BiomeTags
+import net.minecraft.screen.PlayerScreenHandler
+import net.minecraft.screen.ScreenHandler
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.sound.SoundCategory
 import net.minecraft.sound.SoundEvent
@@ -121,6 +134,7 @@ import net.minecraft.util.ActionResult
 import net.minecraft.util.DyeColor
 import net.minecraft.util.Formatting
 import net.minecraft.util.Hand
+import net.minecraft.util.Identifier
 import net.minecraft.util.collection.DefaultedList
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.Axis
@@ -316,7 +330,7 @@ object Impl {
         source: DamageSource,
         amount: Float
     ): Boolean {
-        val armour = instance.armorItems.map { it.item }.filterIsInstance<ArmorItem>()
+        val armour = instance.armorItems.map { it.item }.filterIsInstance<ArmorItem>().filter { it.material != ArmorMaterials.CHAIN }
 
         if (!(
             armour.any { it.armorSlot == ArmorItem.ArmorSlot.BOOTS } &&
@@ -668,6 +682,7 @@ object Impl {
         } else false
     }
 
+    // TODO: make these translatable? ;-;
     fun getTrackedDataName(trackedData: TrackedData<*>) = when (trackedData) {
         Entity.FLAGS -> "Flags"
         Entity.AIR -> "Air"
@@ -834,4 +849,87 @@ object Impl {
     }
 
     fun entryToString(entry: DataTracker.Entry<*>) = "${getTrackedDataName(entry.data)} (${entry.data.id}): ${entry.get()}"
+
+    fun drawTip(
+        graphics: GuiGraphics,
+        textRenderer: TextRenderer,
+        mouseX: Int,
+        mouseY: Int,
+        delta: Float,
+        ci: CallbackInfo,
+        ms: Long,
+        midX: Int,
+        midY: Int,
+        tip: String,
+    ) {
+        val text = Text.literal(I18n.translate(tip)).asOrderedText()
+        val tooltip = TooltipComponent.of(text)
+
+        graphics.drawTooltip(
+            textRenderer,
+            listOf(tooltip),
+            midX, midY + 60,
+            CentredTooltipPositioner
+        )
+        graphics.matrices.translate(0f, 0f, 401f)
+        graphics.drawCenteredShadowedText(
+            textRenderer,
+            "#${SomftCraftClient.tooltips.indexOf(tip)}",
+            midX + tooltip.getWidth(textRenderer) / 2,
+            midY - tooltip.height + textRenderer.fontHeight / 2 + 60,
+            DyeColor.YELLOW.signColor
+        )
+    }
+
+    fun drawBackground(
+        screen: Screen,
+        graphics: GuiGraphics,
+        backgroundTexture: Identifier,
+        x: Int,
+        y: Int
+    ) {
+        // armor slots
+        graphics.drawTexture(HandledScreen.BACKGROUND_TEXTURE, x - 20, y, 0, 0, 25, 79)
+        // off-hand background
+        graphics.drawTexture(HandledScreen.BACKGROUND_TEXTURE, x - 13, y + 7 + 18 * 4, 7, 7, 18, 18)
+        // off-hand edge
+        graphics.drawTexture(HandledScreen.BACKGROUND_TEXTURE, x - 20, y + 7 + 18 * 4, 0, 4, 7, 18)
+        // removes a bit of white
+        graphics.drawTexture(HandledScreen.BACKGROUND_TEXTURE, x + 1, y + 79 + 18, 3, 159, 2, 4)
+        // bottom edge
+        graphics.drawTexture(HandledScreen.BACKGROUND_TEXTURE, x - 20, y + 79 + 18, 0, 159, 21, 6)
+        // a lil gray pixel to make it look like a corner
+        graphics.drawTexture(HandledScreen.BACKGROUND_TEXTURE, x + 1, y + 83 + 18, 3, 164, 1, 1)
+
+        if (screen is CreativeInventoryScreen && CreativeInventoryScreen.selectedTab == ItemGroups.getDefaultTab()) {
+            // white part
+            graphics.drawTexture(HandledScreen.BACKGROUND_TEXTURE, x + 1, y, 1, 159, 2, 3)
+            // gray part
+            graphics.drawTexture(HandledScreen.BACKGROUND_TEXTURE, x + 3, y, 3, 159, 2, 3)
+        }
+    }
+
+    fun outsideExtraSlotBounds(
+        mouseX: Double,
+        mouseY: Double,
+        left: Int,
+        top: Int,
+        button: Int
+    ) = mouseX < left - 20 ||
+        mouseY < top ||
+        mouseX >= left ||
+        mouseY >= top + 79 + 18 + 7
+
+    fun addExtraSlots(screen: ScreenHandler, playerInventory: PlayerInventory) {
+        for (i in 0..3) {
+            screen.addSlot(
+                ArmorSlot(
+                    playerInventory, playerInventory.player,
+                    PlayerScreenHandler.EQUIPMENT_SLOT_ORDER[i]
+                )
+            )
+        }
+
+        screen.addSlot(OffHandSlot(playerInventory, playerInventory.player))
+    }
 }

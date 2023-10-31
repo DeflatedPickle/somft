@@ -40,6 +40,11 @@ repositories {
 	}
 
 	maven {
+		name = "Ladysnake Libs"
+		url = 'https://maven.ladysnake.org/releases'
+	}
+
+	maven {
 		name 'JitPack'
 		url 'https://jitpack.io'
 	}
@@ -59,6 +64,10 @@ dependencies {
 
 	modImplementation(libs.mod.menu) {
 		transitive = false
+	}
+
+	modImplementation(libs.trinkets) {
+		exclude(group: "net.fabricmc")
 	}
 
 	if (!local.length()) {
@@ -153,7 +162,7 @@ blossom {
 	replaceToken('$[yarn]', libs.versions.quilt.mappings.get())
 	replaceToken('$[loader]', libs.versions.quilt.loader.get())
 	replaceToken('$[loom]', libs.versions.quilt.loom.get())
-	replaceToken('$[quilt]', libs.versions.quilted.fabric.api.get())
+	replaceToken('$[qfapi]', libs.versions.quilted.fabric.api.get())
 }
 
 processResources {
@@ -167,8 +176,9 @@ processResources {
 			"site"     : project.mod_site,
 			"src"      : project.mod_src,
 			"minecraft": libs.versions.minecraft.get(),
-			"quilt"    : ver(libs.versions.quilted.fabric.api),
+			"qfapi"    : ver(libs.versions.quilted.fabric.api),
 			"loader"   : ver(libs.versions.quilt.loader),
+			"trinkets"    : ver(libs.versions.trinkets),
 			"java"     : project.java_version,
 			"adapter"  : "1.7.4+kotlin.${kotlin_version}",
 			"group"    : project.maven_group,

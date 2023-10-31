@@ -12,13 +12,13 @@ class ToolsHud(
 ) {
     val padding = 5
 
-    val playerSize = 32
-
     fun render(graphics: GuiGraphics) {
         if (this.client.options.debugEnabled || !SomftCraftClient.CONFIG.hudConfig.showTools) return
 
         val textRenderer = this.client.textRenderer
         val player = this.client.player ?: return
+
+        val playerSize = SomftCraftClient.CONFIG.hudConfig.miniMeHUDConfig.playerSize
 
         val tools = mutableListOf(Items.CLOCK, Items.COMPASS, Items.RECOVERY_COMPASS)
 

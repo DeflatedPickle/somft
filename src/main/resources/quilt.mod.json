@@ -21,7 +21,7 @@
                 "id": "quilt_loader"
             },
             {
-                "versions": ">=${quilt}-",
+                "versions": ">=${qfapi}-",
                 "id": "quilted_fabric_api"
             },
             {
@@ -31,6 +31,10 @@
             {
                 "versions": ">=${adapter}",
                 "id": "fabric-language-kotlin"
+            },
+            {
+                "versions": ">=${trinkets}",
+                "id": "trinkets"
             }
         ],
         "intermediate_mappings": "net.fabricmc:intermediary",

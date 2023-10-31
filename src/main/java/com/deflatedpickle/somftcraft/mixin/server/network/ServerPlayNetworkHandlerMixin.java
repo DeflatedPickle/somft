@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 @SuppressWarnings({"UnusedMixin", "SpellCheckingInspection"})
 @Mixin(ServerPlayNetworkHandler.class)
-public class ServerPlayNetworkHandlerMixin {
+public abstract class ServerPlayNetworkHandlerMixin {
   @Redirect(
       method = "onPlayerInteractionWithItem",
       at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isEmpty()Z"))

@@ -5,17 +5,38 @@ package com.deflatedpickle.somftcraft.mixin.block;
 import com.deflatedpickle.somftcraft.SomftCraft;
 import com.deflatedpickle.somftcraft.api.DirectionalFireSpreader;
 import com.deflatedpickle.somftcraft.api.FireSpreader;
+import java.util.List;
 import net.minecraft.block.*;
+import net.minecraft.client.item.TooltipContext;
+import net.minecraft.item.AxeItem;
+import net.minecraft.item.HoeItem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ShovelItem;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.CommonTexts;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.random.RandomGenerator;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @SuppressWarnings({"UnusedMixin", "deprecation"})
 @Mixin(Block.class)
 public abstract class BlockMixin extends AbstractBlock {
+  @Shadow
+  public abstract BlockState getDefaultState();
+
+  @Shadow private BlockState defaultState;
+
   public BlockMixin(Settings settings) {
     super(settings);
   }
@@ -80,5 +101,71 @@ public abstract class BlockMixin extends AbstractBlock {
 
       world.scheduleBlockTick(pos, (Block) (Object) this, 30 + world.random.nextInt(10));
     }
+  }
+
+  @Inject(method = "appendTooltip", at = @At("HEAD"))
+  public void onAppendTooltip(
+      ItemStack stack,
+      @Nullable BlockView world,
+      List<Text> tooltip,
+      TooltipContext options,
+      CallbackInfo ci) {
+    var block = (Block) (Object) this;
+    var state = this.defaultState;
+
+    if (this instanceof Oxidizable) {
+      addTooltip(tooltip, "oxidized");
+    }
+
+    if (block == Blocks.WAXED_COPPER_BLOCK
+        || block == Blocks.WAXED_WEATHERED_COPPER
+        || block == Blocks.WAXED_EXPOSED_COPPER
+        || block == Blocks.WAXED_OXIDIZED_COPPER
+        || block == Blocks.WAXED_OXIDIZED_CUT_COPPER
+        || block == Blocks.WAXED_WEATHERED_CUT_COPPER
+        || block == Blocks.WAXED_EXPOSED_CUT_COPPER
+        || block == Blocks.WAXED_CUT_COPPER
+        || block == Blocks.WAXED_OXIDIZED_CUT_COPPER_STAIRS
+        || block == Blocks.WAXED_WEATHERED_CUT_COPPER_STAIRS
+        || block == Blocks.WAXED_EXPOSED_CUT_COPPER_STAIRS
+        || block == Blocks.WAXED_CUT_COPPER_STAIRS
+        || block == Blocks.WAXED_OXIDIZED_CUT_COPPER_SLAB
+        || block == Blocks.WAXED_WEATHERED_CUT_COPPER_SLAB
+        || block == Blocks.WAXED_EXPOSED_CUT_COPPER_SLAB
+        || block == Blocks.WAXED_CUT_COPPER_SLAB) {
+      addTooltip(tooltip, "waxed");
+    }
+
+    if (block instanceof JukeboxBlock) {
+      addTooltip(tooltip, "jukebox");
+    }
+
+    if (AxeItem.STRIPPED_BLOCKS.containsKey(this)) {
+      addTooltip(tooltip, "strippable");
+    }
+
+    if (HoeItem.TILLING_ACTIONS.containsKey(this)) {
+      addTooltip(tooltip, "tillable");
+    }
+
+    if (ShovelItem.PATH_STATES.containsKey(this)) {
+      addTooltip(tooltip, "pathable");
+    }
+
+    if (CampfireBlock.canBeLit(state)
+        || CandleBlock.canBeLit(state)
+        || CandleCakeBlock.canBeLit(state)) {
+      addTooltip(tooltip, "lightable");
+    }
+  }
+
+  @Unique
+  private void addTooltip(List<Text> tooltip, String key) {
+    tooltip.add(CommonTexts.EMPTY);
+    tooltip.add(Text.translatable("block.minecraft." + key + ".desc1").formatted(Formatting.GRAY));
+    tooltip.add(
+        CommonTexts.space()
+            .append(
+                Text.translatable("block.minecraft." + key + ".desc2").formatted(Formatting.BLUE)));
   }
 }

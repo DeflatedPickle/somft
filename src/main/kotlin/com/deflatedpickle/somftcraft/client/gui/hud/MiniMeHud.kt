@@ -12,13 +12,13 @@ class MiniMeHud(
 ) {
     val padding = 5
 
-    val playerSize = 32
-
     fun render(graphics: GuiGraphics) {
         if (this.client.options.debugEnabled || !SomftCraftClient.CONFIG.hudConfig.showLilGuy) return
 
         val textRenderer = this.client.textRenderer
         val player = this.client.player ?: return
+
+        val playerSize = SomftCraftClient.CONFIG.hudConfig.miniMeHUDConfig.playerSize
 
         InventoryScreen.drawEntity(
             graphics,
