@@ -1,0 +1,7 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "somft:item/quiver_arrows",
+        "layer1": "somft:item/quiver"
+    }
+}

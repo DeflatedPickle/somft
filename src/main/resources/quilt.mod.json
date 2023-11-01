@@ -41,11 +41,11 @@
         "entrypoints": {
             "client_init": [{
                 "adapter": "kotlin",
-                "value": "com.deflatedpickle.somftcraft.SomftCraftClient"
+                "value": "com.deflatedpickle.somft.SomftClient"
             }],
             "init": [{
             "adapter": "kotlin",
-            "value": "com.deflatedpickle.somftcraft.SomftCraft"
+            "value": "com.deflatedpickle.somft.Somft"
         }]},
         "id": "${id}",
         "version": "${version}",

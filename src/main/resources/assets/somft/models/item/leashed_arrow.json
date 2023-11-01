@@ -1,0 +1,7 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "minecraft:item/arrow",
+        "layer1": "somft:item/leashed_arrow"
+    }
+}

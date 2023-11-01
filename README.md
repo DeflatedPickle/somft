@@ -1,4 +1,4 @@
-# somft ![Build](https://github.com/DeflatedPickle/somftcraft/actions/workflows/gradle-build.yml/badge.svg)
+# somft ![Build](https://github.com/DeflatedPickle/somft/actions/workflows/gradle-build.yml/badge.svg)
 a vanilla+ mechanics overhaul and additions
 
 <p align="center">
