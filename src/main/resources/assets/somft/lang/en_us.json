@@ -46,6 +46,12 @@
 
     "item.minecraft.milk_bucket.desc1": "Removes Potion Effects",
 
+    "interaction.entity": "Interact with Entity:",
+    "interaction.entity.tame": "Tame %s",
+    "interaction.entity.breed": "Breed %s",
+    "interaction.entity.breed.tamed": "Breed (Tamed) %s",
+    "interaction.entity.delimiter": ", ",
+
     "block.minecraft.campfire.desc1": "Interacts with Raw Food:",
     "block.minecraft.campfire.desc2": "Cooks Food",
     "block.minecraft.jukebox.desc1": "Interacts with Music Disk:",
@@ -62,6 +68,8 @@
     "block.minecraft.oxidized.desc2": "Scrapes Oxidation",
     "block.minecraft.waxed.desc1": "Interacts with Axe:",
     "block.minecraft.waxed.desc2": "Scrapes Wax",
+    "block.minecraft.brushable.desc1": "Interacts with Brush:",
+    "block.minecraft.brushable.desc2": "Excavate Block",
 
     "gamerule.doMobFireGrief": "Mobs on fire spread fire",
     "gamerule.doBlockFireGrief": "Lit blocks spread fire",

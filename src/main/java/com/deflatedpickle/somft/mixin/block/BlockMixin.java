@@ -138,6 +138,8 @@ public abstract class BlockMixin extends AbstractBlock {
 
     if (block instanceof JukeboxBlock) {
       addTooltip(tooltip, "jukebox");
+    } else if (block instanceof BrushableBlock) {
+      addTooltip(tooltip, "brushable");
     }
 
     if (AxeItem.STRIPPED_BLOCKS.containsKey(this)) {
@@ -154,7 +156,8 @@ public abstract class BlockMixin extends AbstractBlock {
 
     if (CampfireBlock.canBeLit(state)
         || CandleBlock.canBeLit(state)
-        || CandleCakeBlock.canBeLit(state)) {
+        || CandleCakeBlock.canBeLit(state)
+        || block == Blocks.TNT) {
       addTooltip(tooltip, "lightable");
     }
   }

@@ -4,6 +4,10 @@
 
 package com.deflatedpickle.somft
 
+import com.deflatedpickle.somft.api.IconSet
+import com.deflatedpickle.somft.api.IconType.EMPTY
+import com.deflatedpickle.somft.api.IconType.FULL
+import com.deflatedpickle.somft.api.IconType.HALF
 import com.deflatedpickle.somft.api.Milkable
 import com.deflatedpickle.somft.client.tooltip.CentredTooltipPositioner
 import com.deflatedpickle.somft.screen.ArmorSlot
@@ -931,5 +935,47 @@ object Impl {
         }
 
         screen.addSlot(OffHandSlot(playerInventory, playerInventory.player))
+    }
+
+    val ICONS = Identifier("textures/gui/icons.png")
+
+    fun drawIconRow(
+        graphics: GuiGraphics,
+        textRenderer: TextRenderer,
+        limit: Int,
+        x: Int,
+        y: Int,
+        set: IconSet,
+    ) {
+        for (s in 0..9) {
+            val x = x + if (set.backwards) 10 * 8 - s * 8 - 9 else s * 8
+            val (u, v) = set.getUV(EMPTY)
+            graphics.drawTexture(
+                ICONS,
+                x, y,
+                u, v,
+                9, 9
+            )
+
+            if (s * 2 + 1 < limit) {
+                val (u, v) = set.getUV(FULL)
+                graphics.drawTexture(
+                    ICONS,
+                    x, y,
+                    u, v,
+                    9, 9
+                )
+            }
+
+            if (s * 2 + 1 == limit) {
+                val (u, v) = set.getUV(HALF)
+                graphics.drawTexture(
+                    ICONS,
+                    x, y,
+                    u, v,
+                    9, 9
+                )
+            }
+        }
     }
 }

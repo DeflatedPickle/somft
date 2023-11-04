@@ -228,3 +228,12 @@ accessible field net/minecraft/client/render/Camera lastCameraY F
 accessible field net/minecraft/client/render/Camera focusedEntity Lnet/minecraft/entity/Entity;
 accessible field net/minecraft/client/render/Camera thirdPerson Z
 accessible field net/minecraft/client/render/Camera area Lnet/minecraft/world/BlockView;
+accessible field net/minecraft/entity/passive/CatEntity TAMING_INGREDIENT Lnet/minecraft/recipe/Ingredient;
+accessible field net/minecraft/entity/passive/OcelotEntity TAMING_INGREDIENT Lnet/minecraft/recipe/Ingredient;
+accessible field net/minecraft/entity/passive/HorseBaseEntity BREEDING_INGREDIENT Lnet/minecraft/recipe/Ingredient;
+accessible field net/minecraft/entity/passive/LlamaEntity TAMING_INGREDIENT Lnet/minecraft/recipe/Ingredient;
+accessible field net/minecraft/entity/passive/ParrotEntity TAMING_INGREDIENTS Ljava/util/Set;
+accessible method net/minecraft/entity/passive/RabbitEntity isTempting (Lnet/minecraft/item/ItemStack;)Z
+accessible field net/minecraft/entity/passive/StriderEntity BREEDING_INGREDIENT Lnet/minecraft/recipe/Ingredient;
+accessible field net/minecraft/entity/passive/PigEntity BREEDING_INGREDIENT Lnet/minecraft/recipe/Ingredient;
+accessible field net/minecraft/entity/passive/ChickenEntity BREEDING_INGREDIENT Lnet/minecraft/recipe/Ingredient;

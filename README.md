@@ -3,7 +3,7 @@ a vanilla+ mechanics overhaul and additions
 
 <p align="center">
   <a href="https://modrinth.com/mod/somft"><img alt="modrinth" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/modrinth_vector.svg"></a>
-  <a href="https://legacy.curseforge.com/minecraft/mc-mods/somft"><img alt="curseforge" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/curseforge_vector.svg"></a>
+  <a href="https://curseforge.com/minecraft/mc-mods/somft"><img alt="curseforge" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/curseforge_vector.svg"></a>
   <a href="https://github.com/DeflatedPickle/somft"><img alt="github" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/github_vector.svg"></a>
 </p>
 
@@ -28,10 +28,6 @@ a vanilla+ mechanics overhaul and additions
 - #### items
   - shows extra info for held items
   - flowers are edible but disgusting
-  - #### food
-    - tooltip shows hunger filled
-  - #### block item
-    - tooltip shows interactions with items
 - #### blocks
   - lit blocks spread fire (gamerule: `doBlockFireGrief`)
   - dispensers can now:
@@ -58,6 +54,7 @@ a vanilla+ mechanics overhaul and additions
 - #### gui
   - armour slots on most guis
   - totem slot in inventory _(experimental)_
+  - better tooltips
 ### new stuff
 - #### items
   - empty inksack item & ink collection from squids
@@ -97,4 +94,3 @@ a vanilla+ mechanics overhaul and additions
 - [quark](https://curseforge.com/minecraft/mc-mods/quark)
 - [charm](https://www.curseforge.com/minecraft/mc-mods/charm)
 - [supplementaries](https://www.curseforge.com/minecraft/mc-mods/supplementaries)
-
