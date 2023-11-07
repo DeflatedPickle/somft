@@ -16,7 +16,7 @@ class PetAbandonWidget(
     16, 16,
     0, 0,
     16,
-    Identifier("somftcraft", "textures/gui/abandon_button.png"),
+    Identifier("somft", "textures/gui/abandon_button.png"),
     16, 32,
     action
 ) {

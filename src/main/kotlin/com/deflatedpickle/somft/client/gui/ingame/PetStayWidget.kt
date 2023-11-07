@@ -17,7 +17,7 @@ class PetStayWidget(
     checked,
     0, 0,
     16,
-    Identifier("somftcraft", "textures/gui/stay_button.png"),
+    Identifier("somft", "textures/gui/stay_button.png"),
     16, 32,
 ) {
     init {

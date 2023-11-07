@@ -17,7 +17,7 @@ class PetAttackWidget(
     checked,
     0, 0,
     16,
-    Identifier("somftcraft", "textures/gui/attack_button.png"),
+    Identifier("somft", "textures/gui/attack_button.png"),
     16, 32,
 ) {
     init {

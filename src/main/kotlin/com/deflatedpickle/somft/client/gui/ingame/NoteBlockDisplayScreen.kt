@@ -23,7 +23,7 @@ class NoteBlockDisplayScreen(
         val client = MinecraftClient.getInstance()
         val textRenderer = client.textRenderer
 
-        val TEXTURE = Identifier("somftcraft", "textures/gui/keys.png")
+        val TEXTURE = Identifier("somft", "textures/gui/keys.png")
 
         val sharpsNFlats = listOf("F#", "G#", "A#", null, "C#", "D#", null, "F#", "G#", "A#", null, "C#", "D#", null, "F#")
         val natural = listOf("G", "A", "B", "C", "D", "E", "F", "G", "A", "B", "C", "D", "E", "F")

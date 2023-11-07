@@ -7,6 +7,7 @@
 
 package com.deflatedpickle.somft
 
+import com.deflatedpickle.somft.block.cauldron.MilkCauldronBlock
 import com.deflatedpickle.somft.block.dispenser.HorseArmorDispenserBehavior
 import com.deflatedpickle.somft.block.dispenser.TorchDispenserBehavior
 import com.deflatedpickle.somft.enchantment.DegradationCurseEnchantment
@@ -26,12 +27,16 @@ import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents
 import net.fabricmc.fabric.api.loot.v2.LootTableEvents
+import net.minecraft.block.BlockState
+import net.minecraft.block.cauldron.CauldronBehavior
 import net.minecraft.block.dispenser.DispenserBlock
 import net.minecraft.command.CommandBuildContext
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.data.TrackedDataHandlerRegistry
+import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item
 import net.minecraft.item.ItemGroups
+import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.loot.LootPool
 import net.minecraft.loot.LootTables
@@ -43,8 +48,12 @@ import net.minecraft.registry.Registries
 import net.minecraft.registry.Registry
 import net.minecraft.server.command.CommandManager
 import net.minecraft.server.command.ServerCommandSource
+import net.minecraft.sound.SoundEvents
+import net.minecraft.util.Hand
 import net.minecraft.util.Identifier
+import net.minecraft.util.math.BlockPos
 import net.minecraft.world.GameRules
+import net.minecraft.world.World
 import org.quiltmc.loader.api.ModContainer
 import org.quiltmc.qsl.base.api.entrypoint.ModInitializer
 import org.quiltmc.qsl.command.api.CommandRegistrationCallback
@@ -74,6 +83,46 @@ object Somft : ModInitializer {
 
     val ARMOR_STAND_GUI_PACKET_ID = Identifier("somft", "armor_stand_gui")
 
+    val MILK_CAULDRON_BEHAVIOR: Map<Item, CauldronBehavior> = CauldronBehavior.createMap()
+    val EMPTY_MILK =
+        CauldronBehavior {
+            state: BlockState,
+            world: World,
+            pos: BlockPos,
+            player: PlayerEntity,
+            hand: Hand,
+            stack: ItemStack ->
+            CauldronBehavior.emptyCauldron(
+                state,
+                world,
+                pos,
+                player,
+                hand,
+                stack,
+                ItemStack(Items.MILK_BUCKET),
+                { statex: BlockState -> true },
+                SoundEvents.ITEM_BUCKET_FILL_POWDER_SNOW
+            )
+        }
+    val FILL_WITH_MILK =
+        CauldronBehavior {
+            state: BlockState,
+            world: World,
+            pos: BlockPos,
+            player: PlayerEntity,
+            hand: Hand,
+            stack: ItemStack ->
+            CauldronBehavior.fillCauldron(
+                world,
+                pos,
+                player,
+                hand,
+                stack,
+                MilkCauldronBlock.defaultState,
+                SoundEvents.ITEM_BUCKET_EMPTY_POWDER_SNOW
+            )
+        }
+
     override fun onInitialize(mod: ModContainer) {
         Registry.register(Registries.ITEM, Identifier(mod.metadata().id(), "empty_ink_sac"), EmptyInkSacItem)
         Registry.register(Registries.ITEM, Identifier(mod.metadata().id(), "chainmail_horse_armor"), CHAINMAIL_HORSE_ARMOUR)
@@ -85,6 +134,8 @@ object Somft : ModInitializer {
         // TODO: add variant eggs?
         Registry.register(Registries.ITEM, Identifier(mod.metadata().id(), "tamed_fox_spawn_egg"), TAMED_FOX_SPAWN_EGG)
         Registry.register(Registries.ITEM, Identifier(mod.metadata().id(), "tamed_parrot_spawn_egg"), TAMED_PARROT_SPAWN_EGG)
+
+        Registry.register(Registries.BLOCK, Identifier(mod.metadata().id(), "milk_cauldron"), MilkCauldronBlock)
 
         Registry.register(Registries.ENCHANTMENT, Identifier(mod.metadata().id(), "degradation_curse"), DegradationCurseEnchantment)
         Registry.register(Registries.ENCHANTMENT, Identifier(mod.metadata().id(), "malnutrition_curse"), MalnutritionCurseEnchantment)

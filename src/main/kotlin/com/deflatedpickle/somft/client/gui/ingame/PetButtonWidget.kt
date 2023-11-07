@@ -14,7 +14,7 @@ class PetButtonWidget(
     16, 16,
     0, 0,
     16,
-    Identifier("somftcraft", "textures/gui/pet_manager_button.png"),
+    Identifier("somft", "textures/gui/pet_manager_button.png"),
     16, 32,
     {
         MinecraftClient.getInstance().let { client ->

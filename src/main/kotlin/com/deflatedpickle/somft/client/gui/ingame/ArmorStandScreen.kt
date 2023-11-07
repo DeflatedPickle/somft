@@ -22,7 +22,7 @@ class ArmorStandScreen(
     Text.translatable("gui.armor_stand")
 ) {
     companion object {
-        val BACKGROUND_TEXTURE = Identifier("somftcraft", "textures/gui/container/armor_stand.png")
+        val BACKGROUND_TEXTURE = Identifier("somft", "textures/gui/container/armor_stand.png")
     }
 
     override fun drawBackground(

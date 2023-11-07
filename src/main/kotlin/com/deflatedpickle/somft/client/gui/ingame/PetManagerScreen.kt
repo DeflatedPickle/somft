@@ -31,7 +31,7 @@ class PetManagerScreen(
     Text.translatable("gui.pet_manager")
 ) {
     companion object {
-        val BACKGROUND_TEXTURE = Identifier("somftcraft", "textures/gui/container/pet_manager.png")
+        val BACKGROUND_TEXTURE = Identifier("somft", "textures/gui/container/pet_manager.png")
     }
 
     var selectedIndex = 0

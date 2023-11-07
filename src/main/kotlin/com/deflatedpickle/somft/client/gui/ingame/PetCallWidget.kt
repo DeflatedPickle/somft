@@ -16,7 +16,7 @@ class PetCallWidget(
     16, 16,
     0, 0,
     16,
-    Identifier("somftcraft", "textures/gui/whistle_button.png"),
+    Identifier("somft", "textures/gui/whistle_button.png"),
     16, 32,
     action
 ) {

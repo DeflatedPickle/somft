@@ -1,5 +1,6 @@
 {
     "mixins": [
+        "block.cauldron.CauldronBehaviorMixin",
         "block.dispenser.ItemDispenserBehaviorMixin",
         "block.dispenser.ShearsDispenserBehaviorMixin",
         "block.BlastFurnaceBlockMixin",
