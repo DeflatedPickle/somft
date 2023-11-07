@@ -33,7 +33,7 @@ public abstract class CowEntityMixin extends AnimalEntity implements Milkable {
   private static final TrackedData<Integer> MILK_TICKS =
       DataTracker.registerData(CowEntity.class, TrackedDataHandlerRegistry.INTEGER);
 
-  @Unique private static final int MILK_TICKS_MAX = 24000 / 5;
+  @Unique private static final int MILK_TICKS_MAX = 24000 / 4;
   @Unique private static final String NBT_KEY = "Milk";
 
   protected CowEntityMixin(EntityType<? extends AnimalEntity> entityType, World world) {

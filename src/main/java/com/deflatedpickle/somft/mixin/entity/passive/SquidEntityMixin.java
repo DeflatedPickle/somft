@@ -2,10 +2,13 @@
 
 package com.deflatedpickle.somft.mixin.entity.passive;
 
+import com.deflatedpickle.somft.Impl;
 import com.deflatedpickle.somft.api.Breedable;
 import com.deflatedpickle.somft.api.DoesAge;
+import com.deflatedpickle.somft.api.Milkable;
 import com.deflatedpickle.somft.entity.ai.goal.FollowParentSquidGoal;
 import com.deflatedpickle.somft.entity.ai.goal.SquidMateGoal;
+import com.deflatedpickle.somft.item.EmptyInkSacItem;
 import java.util.UUID;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityStatuses;
@@ -20,12 +23,15 @@ import net.minecraft.entity.passive.GlowSquidEntity;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.passive.SquidEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUsage;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -44,22 +50,31 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @SuppressWarnings({"UnusedMixin", "WrongEntityDataParameterClass", "SpellCheckingInspection"})
 @Mixin(SquidEntity.class)
-public abstract class SquidEntityMixin extends WaterCreatureEntity implements Breedable, DoesAge {
-  @Unique private static final TrackedData<Boolean> CHILD;
+public abstract class SquidEntityMixin extends WaterCreatureEntity
+    implements Breedable, DoesAge, Milkable {
+  @Unique
+  private static final TrackedData<Boolean> CHILD =
+      DataTracker.registerData(SquidEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+
+  ;
+
+  @Unique
+  private static final TrackedData<Integer> MILK_TICKS =
+      DataTracker.registerData(SquidEntity.class, TrackedDataHandlerRegistry.INTEGER);
+
+  @Unique private static final int MILK_TICKS_MAX = 24000 / 6;
+  @Unique private static final String NBT_KEY = "Ink";
   @Unique protected int breedingAge;
   @Unique protected int forcedAge;
   @Unique protected int happyTicksRemaining;
   @Unique private int loveTicks;
   @Unique @Nullable private UUID lovingPlayer;
 
-  static {
-    CHILD = DataTracker.registerData(SquidEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
-  }
-
   protected SquidEntityMixin(EntityType<? extends WaterCreatureEntity> entityType, World world) {
     super(entityType, world);
   }
 
+  @Override
   public EntityData initialize(
       ServerWorldAccess world,
       LocalDifficulty difficulty,
@@ -133,6 +148,7 @@ public abstract class SquidEntityMixin extends WaterCreatureEntity implements Br
   protected void initDataTracker() {
     super.initDataTracker();
     this.dataTracker.startTracking(CHILD, false);
+    this.dataTracker.startTracking(MILK_TICKS, MILK_TICKS_MAX);
   }
 
   @Unique
@@ -187,6 +203,8 @@ public abstract class SquidEntityMixin extends WaterCreatureEntity implements Br
     if (this.lovingPlayer != null) {
       nbt.putUuid("LoveCause", this.lovingPlayer);
     }
+
+    nbt.putInt(NBT_KEY, this.somft$getMilkTicks());
   }
 
   @Override
@@ -197,6 +215,8 @@ public abstract class SquidEntityMixin extends WaterCreatureEntity implements Br
 
     this.loveTicks = nbt.getInt("InLove");
     this.lovingPlayer = nbt.containsUuid("LoveCause") ? nbt.getUuid("LoveCause") : null;
+
+    this.somft$setMilkTicks(nbt.getInt(NBT_KEY));
   }
 
   @Override
@@ -270,9 +290,35 @@ public abstract class SquidEntityMixin extends WaterCreatureEntity implements Br
       if (getWorld().isClient) {
         return ActionResult.CONSUME;
       }
+    } else {
+      if (this.somft$getMilkTicks() > 0) {
+        playAmbientSound();
+        Impl.INSTANCE.spawnPlayerReactionParticles(this);
+        return super.interactMob(player, hand);
+      } else if (itemStack.isOf(EmptyInkSacItem.INSTANCE) && !this.somft$isBaby()) {
+        player.playSound(SoundEvents.ENTITY_COW_MILK, 1.0F, 1.0F);
+
+        Item item;
+        if ((Object) this instanceof GlowSquidEntity) {
+          item = Items.GLOW_INK_SAC;
+        } else {
+          item = Items.INK_SAC;
+        }
+
+        ItemStack itemStack2 = ItemUsage.exchangeStack(itemStack, player, item.getDefaultStack());
+        player.setStackInHand(hand, itemStack2);
+        this.somft$setMilkTicks(MILK_TICKS_MAX);
+        return ActionResult.success(this.getWorld().isClient);
+      }
     }
 
     return super.interactMob(player, hand);
+  }
+
+  @Override
+  public void tick() {
+    super.tick();
+    this.somft$setMilkTicks(Math.max(0, somft$getMilkTicks() - 1));
   }
 
   @Unique
@@ -383,5 +429,13 @@ public abstract class SquidEntityMixin extends WaterCreatureEntity implements Br
     } else {
       super.handleStatus(status);
     }
+  }
+
+  public int somft$getMilkTicks() {
+    return this.dataTracker.get(MILK_TICKS);
+  }
+
+  public void somft$setMilkTicks(int ticks) {
+    this.dataTracker.set(MILK_TICKS, ticks);
   }
 }
