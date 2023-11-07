@@ -82,8 +82,8 @@ public abstract class PlayerEntityMixin extends LivingEntity implements HasPets 
 
     for (var i : this.getArmorItems()) {
       if (EnchantmentHelper.getLevel(MalnutritionCurseEnchantment.INSTANCE, i) > 0) {
-        hunger /= 1.2;
-        saturation /= 1.2;
+        hunger -= 2;
+        saturation /= 1.2F;
       }
     }
 

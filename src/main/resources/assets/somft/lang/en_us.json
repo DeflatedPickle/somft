@@ -155,5 +155,7 @@
     "gui.debug.display": "Display: %dx%d (%s)",
     "gui.debug.target.block": "§nTargeted Block: %d, %d, %d",
     "gui.debug.target.fluid": "§nTargeted Fluid: %d, %d, %d",
-    "gui.debug.target.entity": "§nTargeted Entity"
+    "gui.debug.target.entity": "§nTargeted Entity",
+
+    "title.continue": "Continue the last played world"
 }
