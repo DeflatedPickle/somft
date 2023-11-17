@@ -36,7 +36,7 @@ class SomftCraftConfig : WrappedConfig() {
             val layout = HotbarLayout.ROW
             val anchor = Anchor.S
             val horizontalPadding = 0f
-            val verticalPadding = 22f
+            val verticalPadding = 10f
         }
     }
 }

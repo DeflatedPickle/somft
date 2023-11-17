@@ -55,6 +55,8 @@ a vanilla+ mechanics overhaul and additions
   - armour slots on most guis
   - totem slot in inventory _(experimental)_
   - better tooltips
+  - customizable hotbar
+  - recipe book tab tooltips
 ### new stuff
 - #### items
   - empty inksack item & ink collection from squids
@@ -62,7 +64,7 @@ a vanilla+ mechanics overhaul and additions
     * goes on your back
     * stores arrows you pick up
     * only stores arrows
-    * they're basically a bundle
+    * they're basically bundles
     * bows only shoot from them
     * bows will not work without one
   - chainmail & netherite horse armour

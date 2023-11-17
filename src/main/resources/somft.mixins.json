@@ -69,6 +69,7 @@
         "client.gui.screen.ingame.CreativeScreenMixin",
         "client.gui.screen.ingame.HandledScreenMixin",
         "client.gui.screen.ingame.InventoryScreenMixin",
+        "client.gui.screen.recipe.book.RecipeBookWidgetMixin",
         "client.gui.screen.LoadingScreenTipsMixin",
         "client.gui.screen.TitleScreenMixin",
         "client.gui.screen.WorldLoadingScreenMixin",
