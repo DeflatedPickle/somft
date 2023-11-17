@@ -4,6 +4,8 @@
 
 package com.deflatedpickle.somft.config
 
+import com.deflatedpickle.somft.api.Anchor
+import com.deflatedpickle.somft.api.HotbarLayout
 import net.minecraft.util.DyeColor
 import org.quiltmc.config.api.Config.Section
 import org.quiltmc.config.api.WrappedConfig
@@ -18,6 +20,7 @@ class SomftCraftConfig : WrappedConfig() {
 
         val controlsHUDConfig = ControlsHUDConfig()
         val miniMeHUDConfig = MiniMeHUDConfig()
+        val hotbarConfig = HotbarConfig()
 
         class ControlsHUDConfig : Section {
             val colour = DyeColor.WHITE.signColor
@@ -27,6 +30,13 @@ class SomftCraftConfig : WrappedConfig() {
 
         class MiniMeHUDConfig : Section {
             val playerSize = 32
+        }
+
+        class HotbarConfig : Section {
+            val layout = HotbarLayout.ROW
+            val anchor = Anchor.S
+            val horizontalPadding = 0f
+            val verticalPadding = 22f
         }
     }
 }

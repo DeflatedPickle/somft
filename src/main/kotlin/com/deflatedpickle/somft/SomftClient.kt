@@ -34,7 +34,7 @@ import org.quiltmc.qsl.networking.api.PacketSender
 import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking
 
 object SomftClient : ClientModInitializer {
-    val CONFIG = QuiltConfig.create("somftcraft", "config", SomftCraftConfig::class.java)
+    val CONFIG = QuiltConfig.create("somft", "config", SomftCraftConfig::class.java)
 
     val tooltips = listOf(
         "gui.loadtip.digging_down",

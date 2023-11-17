@@ -1,9 +1,11 @@
 /* Copyright (c) 2023 DeflatedPickle under the GPLv3 license */
 
-@file:Suppress("MemberVisibilityCanBePrivate", "UNUSED_PARAMETER")
+@file:Suppress("MemberVisibilityCanBePrivate", "UNUSED_PARAMETER", "SpellCheckingInspection")
 
 package com.deflatedpickle.somft
 
+import com.deflatedpickle.somft.api.Anchor
+import com.deflatedpickle.somft.api.HotbarLayout
 import com.deflatedpickle.somft.api.IconSet
 import com.deflatedpickle.somft.api.IconType.EMPTY
 import com.deflatedpickle.somft.api.IconType.FULL
@@ -25,6 +27,7 @@ import net.minecraft.block.dispenser.DispenserBlock
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.hud.InGameHud
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.screen.TitleScreen
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen
@@ -149,10 +152,13 @@ import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.World
 import net.minecraft.world.event.GameEvent
+import org.joml.Vector2f
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
 import java.util.function.Consumer
 import java.util.function.Predicate
+import kotlin.math.cos
+import kotlin.math.sin
 
 object Impl {
     fun igniteEntity(
@@ -975,6 +981,153 @@ object Impl {
                     u, v,
                     9, 9
                 )
+            }
+        }
+    }
+
+    val HOTBAR_TEXTURE = Identifier("somft", "textures/gui/hotbar.png")
+
+    fun renderHotbar(
+        instance: InGameHud,
+        tickDelta: Float,
+        graphics: GuiGraphics,
+        renderHotbarItem: (
+            graphics: GuiGraphics,
+            x: Int,
+            y: Int,
+            tickDelta: Float,
+            player: PlayerEntity,
+            stack: ItemStack,
+            seed: Int
+        ) -> Unit
+    ) {
+        // TODO: animate (fade, expand, move) in/out
+        // TODO: more shapes
+
+        var seed = 1
+
+        graphics.matrices.apply {
+            push()
+
+            val pos = Vector2f(0f, 0f)
+            val hPad = SomftClient.CONFIG.hudConfig.hotbarConfig.horizontalPadding
+            val vPad = SomftClient.CONFIG.hudConfig.hotbarConfig.verticalPadding
+            when (SomftClient.CONFIG.hudConfig.hotbarConfig.anchor) {
+                Anchor.ROSE -> pos.set(graphics.scaledWindowWidth / 2f, graphics.scaledWindowHeight / 2f)
+                Anchor.N -> pos.set(graphics.scaledWindowWidth / 2f, vPad)
+                Anchor.NE -> pos.set(graphics.scaledWindowWidth.toFloat() - hPad, vPad)
+                Anchor.E -> pos.set(graphics.scaledWindowWidth.toFloat() - hPad, graphics.scaledWindowHeight / 2f)
+                Anchor.SE -> pos.set(graphics.scaledWindowWidth.toFloat() - hPad, graphics.scaledWindowHeight.toFloat() - vPad)
+                Anchor.S -> pos.set(graphics.scaledWindowWidth / 2f, graphics.scaledWindowHeight.toFloat() - vPad)
+                Anchor.SW -> pos.set(hPad, graphics.scaledWindowHeight.toFloat() - vPad)
+                Anchor.W -> pos.set(hPad, graphics.scaledWindowHeight / 2f)
+                Anchor.NW -> pos.set(hPad, vPad)
+            }
+            translate(pos.x, pos.y, 0f)
+
+            for (i in 0 until 9) {
+                var x = 0
+                var y = 0
+
+                when (SomftClient.CONFIG.hudConfig.hotbarConfig.layout) {
+                    HotbarLayout.ROW -> {
+                        x = -91 + i * 20
+                        y = -12
+                    }
+                    HotbarLayout.COLUMN -> {
+                        x = -11
+                        y = -92 + i * 20
+                    }
+                    HotbarLayout.CIRCLE -> {
+                        val radius = 2 * 22
+                        val theta = (Math.PI * 2) * i / 9
+                        x = (-11f + radius * cos(theta)).toInt()
+                        y = (-11f + radius * sin(theta)).toInt()
+                    }
+                }
+
+                drawSlot(tickDelta, graphics, seed++, x, y, i, renderHotbarItem)
+            }
+
+            pop()
+        }
+    }
+
+    fun drawSlot(
+        tickDelta: Float,
+        graphics: GuiGraphics,
+        seed: Int,
+        x: Int,
+        y: Int,
+        i: Int,
+        renderHotbarItem: (
+            graphics: GuiGraphics,
+            x: Int,
+            y: Int,
+            tickDelta: Float,
+            player: PlayerEntity,
+            stack: ItemStack,
+            seed: Int
+        ) -> Unit
+    ) {
+        when (SomftClient.CONFIG.hudConfig.hotbarConfig.layout) {
+            HotbarLayout.ROW -> graphics.drawTexture(
+                HOTBAR_TEXTURE,
+                x, y, 0,
+                when (i) {
+                    0 -> 0f
+                    8 -> 41f
+                    else -> 21f
+                },
+                0f,
+                21, 22,
+                88, 64
+            )
+            HotbarLayout.COLUMN -> graphics.drawTexture(
+                HOTBAR_TEXTURE,
+                x, y, 0,
+                66f,
+                when (i) {
+                    0 -> 0f
+                    8 -> 41f
+                    else -> 21f
+                },
+                21, 22,
+                88, 64
+            )
+            HotbarLayout.CIRCLE -> graphics.drawTexture(
+                HOTBAR_TEXTURE,
+                x, y, 0,
+                24f, 22f,
+                22, 22,
+                88, 64
+            )
+        }
+
+        MinecraftClient.getInstance().let { client ->
+            client.cameraEntity?.let { entity ->
+                if (entity is PlayerEntity) {
+                    if (i == entity.inventory.selectedSlot) {
+                        graphics.drawTexture(
+                            HOTBAR_TEXTURE,
+                            x - 1, y - 1, 1,
+                            0f, 22f,
+                            24, 24,
+                            88, 64
+                        )
+                    }
+
+                    val plus = if (SomftClient.CONFIG.hudConfig.hotbarConfig.layout == HotbarLayout.CIRCLE) 3 else 2
+                    renderHotbarItem(
+                        graphics,
+                        x + plus,
+                        y + plus + 1,
+                        tickDelta,
+                        entity,
+                        entity.inventory.main[i],
+                        seed
+                    )
+                }
             }
         }
     }

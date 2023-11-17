@@ -55,6 +55,9 @@ repositories {
 dependencies {
 	minecraft libs.minecraft
 	mappings variantOf(libs.quilt.mappings) { classifier 'intermediary-v2' }
+
+	include implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:0.2.0"))
+
 	modImplementation libs.quilt.loader
 	modImplementation libs.quilted.fabric.api
 
