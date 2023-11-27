@@ -24,6 +24,7 @@
         "entity.ai.goal.TemptGoalMixin",
         "entity.decoration.ArmorStandEntityMixin",
         "entity.passive.CowEntityMixin",
+        "entity.passive.HorseBaseEntityMixin",
         "entity.passive.SquidEntityMixin",
         "entity.passive.TameableEntityMixin",
         "entity.player.PlayerInventoryMixin",
@@ -48,6 +49,7 @@
         "item.MeleeItemMixin",
         "item.MilkBucketItemMixin",
         "item.MiningToolItemMixin",
+        "item.PotionItemMixin",
         "item.SwordItemMixin",
         "item.TridentItemMixin",
         "screen.AbstractFurnaceScreenHandlerMixin",
@@ -61,7 +63,8 @@
         "screen.MerchantScreenHandlerMixin",
         "screen.PlayerScreenHandlerMixin",
         "server.network.EntityTrackerEntryMixin",
-        "server.network.ServerPlayNetworkHandlerMixin"
+        "server.network.ServerPlayNetworkHandlerMixin",
+        "state.StateManagerMixin"
     ],
     "client": [
         "client.gui.hud.DebugHudMixin",

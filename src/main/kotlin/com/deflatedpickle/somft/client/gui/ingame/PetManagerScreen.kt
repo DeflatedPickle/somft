@@ -4,15 +4,14 @@ package com.deflatedpickle.somft.client.gui.ingame
 
 import com.deflatedpickle.somft.api.HasPets
 import com.deflatedpickle.somft.api.PetLogic
+import com.deflatedpickle.somft.client.gui.widget.MultiStateButton
 import com.deflatedpickle.somft.screen.PetManagerScreenHandler
-import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen
 import net.minecraft.client.gui.screen.ingame.InventoryScreen
 import net.minecraft.client.gui.screen.ingame.MerchantScreen
 import net.minecraft.client.gui.widget.ButtonWidget
 import net.minecraft.entity.LivingEntity
-import net.minecraft.entity.passive.TameableEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtList
@@ -37,21 +36,13 @@ class PetManagerScreen(
     var selectedIndex = 0
     val pets = mutableListOf<ButtonWidget>()
     var indexStartOffset = 0
+
     var scrolling = false
 
     val padding = 3
 
-    val petStayWidget = PetStayWidget(
-        x + 82 + 49 + padding,
-        y + 10 + 16,
-        false
-    )
-
-    val petAttackWidget = PetAttackWidget(
-        x + 82 + 49 + padding + 16 + padding,
-        y + 10 + 16,
-        false
-    )
+    val petStayWidget = PetStayWidget(0, 0, false)
+    val petAttackWidget = PetAttackWidget(0, 0, false)
 
     override fun init() {
         super.init()
@@ -84,39 +75,32 @@ class PetManagerScreen(
         }
 
         addDrawableChild(
-            PetCallWidget(
-                x + 82 + 49 + padding,
-                y + padding
+            MultiStateButton(
+                x + 116 + padding,
+                y + 5 + padding,
+                58 - padding * 2, 20,
+                PetLogic.Movement.entries,
             ) {
-                MinecraftClient.getInstance().let { client ->
-                    client.player?.let { player ->
-                        val pets = (player as HasPets).`somft$getPets`()
-                        val selectedPet = (pets.get("pets") as NbtList).get(selectedIndex) as NbtCompound
-                        val entity = player.world.entityLookup.get(selectedPet.getUuid("id")) as LivingEntity
-
-                        entity.teleport(player.x, player.y, player.z)
-                    }
-                }
             }
         )
 
-        addDrawableChild(petStayWidget)
-        addDrawableChild(petAttackWidget)
+        addDrawableChild(
+            MultiStateButton(
+                x + 116 + padding,
+                y + 5 + padding + 20 + padding,
+                58 - padding * 2, 20,
+                PetLogic.Attack.entries,
+            ) {
+            }
+        )
 
         addDrawableChild(
-            PetAbandonWidget(
-                x + 82 + 49 + 5,
-                y + 60,
+            MultiStateButton(
+                x + 116 + padding,
+                y + 5 + padding + 20 * 2 + padding * 2,
+                58 - padding * 2, 20,
+                PetLogic.Hurt.entries,
             ) {
-                MinecraftClient.getInstance().let { client ->
-                    client.player?.let { player ->
-                        val pets = (player as HasPets).`somft$getPets`()
-                        val selectedPet = (pets.get("pets") as NbtList).get(selectedIndex) as NbtCompound
-                        val entity = player.world.entityLookup.get(selectedPet.getUuid("id")) as TameableEntity
-
-                        entity.setOwner(null)
-                    }
-                }
             }
         )
     }
@@ -136,18 +120,22 @@ class PetManagerScreen(
         )
 
         val pets = (player as HasPets).`somft$getPets`()
-        val selectedPet = (pets.get("pets") as NbtList).get(selectedIndex) as NbtCompound
-        val entity = player.world.entityLookup.get(selectedPet.getUuid("id")) as LivingEntity
+        val petList = (pets.get("pets") as NbtList)
 
-        InventoryScreen.drawEntity(
-            graphics,
-            x + 82 + 49 / 2,
-            y + 75,
-            30,
-            (x + 82 + 49 / 2).toFloat() - mouseX,
-            (y + 75 - 50).toFloat() - mouseY,
-            entity
-        )
+        if (petList.isNotEmpty()) {
+            val selectedPet = petList[selectedIndex] as NbtCompound
+            val entity = player.world.entityLookup.get(selectedPet.getUuid("id")) as LivingEntity
+
+            InventoryScreen.drawEntity(
+                graphics,
+                x + 61 + 54 / 2,
+                y + 49,
+                17,
+                (x + 61 + 54 / 2).toFloat() - mouseX,
+                (y + 8 + 54 / 2).toFloat() - mouseY,
+                entity
+            )
+        }
     }
 
     private fun renderScrollbar(
@@ -163,9 +151,9 @@ class PetManagerScreen(
             if (this.indexStartOffset == i - 1) {
                 m = 113
             }
-            graphics.drawTexture(MerchantScreen.TEXTURE, x + 69, y + 8 + m, 0, 0.0f, 199.0f, 6, 27, 512, 256)
+            graphics.drawTexture(MerchantScreen.TEXTURE, x + 54, y + 8 + m, 0, 0.0f, 199.0f, 6, 27, 512, 256)
         } else {
-            graphics.drawTexture(MerchantScreen.TEXTURE, x + 69, y + 8, 0, 6.0f, 199.0f, 6, 27, 512, 256)
+            graphics.drawTexture(MerchantScreen.TEXTURE, x + 54, y + 8, 0, 6.0f, 199.0f, 6, 27, 512, 256)
         }
     }
 
@@ -242,7 +230,7 @@ class PetManagerScreen(
         pressAction: PressAction,
     ) : ButtonWidget(
         x, y,
-        60, 20,
+        45, 20,
         text,
         pressAction,
         DEFAULT_NARRATION

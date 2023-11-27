@@ -39,6 +39,7 @@ a vanilla+ mechanics overhaul and additions
     - carve pumpkins
     - light carved pumpkins
   - projectiles break flower pots
+  - cauldrons can be filled with a bucket of fish
 - #### armor
   - lower armour stops berry bushes hurting
     * doesn't work for chainmail
@@ -73,6 +74,10 @@ a vanilla+ mechanics overhaul and additions
     * never lose your arrows again
     * attaches the lead to mobs
     * walk your dog from afar
+- #### blocks
+  - milk cauldron
+    * removes status effects
+  - potion cauldrons
 - #### enchantments
   - curse of degradation
     * the applied item takes triple damage

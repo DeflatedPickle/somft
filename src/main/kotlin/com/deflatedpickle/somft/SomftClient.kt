@@ -4,6 +4,7 @@
 
 package com.deflatedpickle.somft
 
+import com.deflatedpickle.somft.block.PotionCauldronBlock
 import com.deflatedpickle.somft.client.gui.ingame.ArmorStandScreen
 import com.deflatedpickle.somft.config.SomftCraftConfig
 import com.deflatedpickle.somft.item.QuiverItem
@@ -11,6 +12,7 @@ import com.deflatedpickle.somft.screen.ArmorStandScreenHandler
 import dev.emi.trinkets.api.SlotReference
 import dev.emi.trinkets.api.client.TrinketRendererRegistry
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
+import net.minecraft.block.BlockState
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.network.ClientPlayNetworkHandler
 import net.minecraft.client.render.VertexConsumerProvider
@@ -27,6 +29,8 @@ import net.minecraft.network.PacketByteBuf
 import net.minecraft.potion.PotionUtil
 import net.minecraft.util.DyeColor
 import net.minecraft.util.math.Axis
+import net.minecraft.util.math.BlockPos
+import net.minecraft.world.BlockRenderView
 import org.quiltmc.loader.api.ModContainer
 import org.quiltmc.loader.api.config.QuiltConfig
 import org.quiltmc.qsl.base.api.entrypoint.client.ClientModInitializer
@@ -77,20 +81,26 @@ object SomftClient : ClientModInitializer {
                                 }
                                 else -> -1
                             }
-                        } else {
-                            -1
-                        }
-                    } else {
-                        -1
-                    }
-                } else {
-                    -1
-                }
+                        } else -1
+                    } else -1
+                } else -1
             },
             QuiverItem
         )
 
         // TODO: tint the arrow being shot from bows
+
+        ColorProviderRegistry.BLOCK.register(
+            { blockState: BlockState, _: BlockRenderView?, _: BlockPos?, i: Int ->
+                if (i == 0) {
+                    val effects = blockState.get(PotionCauldronBlock.POTION).potion.effects
+                    if (effects.isNotEmpty()) {
+                        effects.first().effectType.color
+                    } else -1
+                } else -1
+            },
+            Somft.POTION_CAULDRON
+        )
 
         ClientPlayNetworking.registerGlobalReceiver(
             Somft.ARMOR_STAND_GUI_PACKET_ID,

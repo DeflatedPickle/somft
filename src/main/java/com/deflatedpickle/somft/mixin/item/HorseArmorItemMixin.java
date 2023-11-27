@@ -37,7 +37,6 @@ public abstract class HorseArmorItemMixin extends Item {
 
   @Override
   public int getEnchantability() {
-    System.out.println(this);
     if (this == Items.LEATHER_HORSE_ARMOR) {
       return 15;
     } else if (this == Somft.INSTANCE.getCHAINMAIL_HORSE_ARMOUR()) {

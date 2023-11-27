@@ -31,9 +31,6 @@
     "recipe_book.tab.campfire": "Campfire",
     "recipe_book.tab.unknown": "Unknown",
 
-    "item.minecraft.enchantment_book.incompatible_with": "Incompatible with:",
-    "item.modifiers.horse": "When on Horse:",
-
     "slot.head": "Helmet",
     "slot.chest": "Chestplate",
     "slot.legs": "Leggings",
@@ -70,6 +67,13 @@
     "interaction.entity.breed": "Breed %s",
     "interaction.entity.breed.tamed": "Breed (Tamed) %s",
     "interaction.entity.delimiter": ", ",
+
+    "item.minecraft.bucket.desc1": "Interacts with Cauldron",
+    "item.minecraft.bucket.desc2": "Fills Cauldron",
+    "item.minecraft.bucket.desc3": "Empties Cauldron",
+
+    "item.minecraft.enchantment_book.incompatible_with": "Incompatible with:",
+    "item.modifiers.horse": "When on Horse:",
 
     "block.minecraft.campfire.desc1": "Interacts with Raw Food:",
     "block.minecraft.campfire.desc2": "Cooks Food",

@@ -2,7 +2,6 @@
 
 package com.deflatedpickle.somft.screen
 
-import com.deflatedpickle.somft.Impl
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.item.ItemStack
@@ -26,8 +25,6 @@ class PetManagerScreenHandler(
         for (j in 0..8) {
             addSlot(Slot(playerInventory, j, 8 + j * 18, 142))
         }
-
-        Impl.addExtraSlots(this, playerInventory)
     }
 
     override fun quickTransfer(

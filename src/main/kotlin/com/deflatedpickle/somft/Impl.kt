@@ -35,6 +35,18 @@ import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.client.gui.tooltip.TooltipComponent
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.enchantment.DamageEnchantment
+import net.minecraft.enchantment.DepthStriderEnchantment
+import net.minecraft.enchantment.Enchantment
+import net.minecraft.enchantment.Enchantments
+import net.minecraft.enchantment.FrostWalkerEnchantment
+import net.minecraft.enchantment.InfinityEnchantment
+import net.minecraft.enchantment.LuckEnchantment
+import net.minecraft.enchantment.MultishotEnchantment
+import net.minecraft.enchantment.PiercingEnchantment
+import net.minecraft.enchantment.ProtectionEnchantment
+import net.minecraft.enchantment.RiptideEnchantment
+import net.minecraft.enchantment.SilkTouchEnchantment
 import net.minecraft.entity.AreaEffectCloudEntity
 import net.minecraft.entity.Entity
 import net.minecraft.entity.ItemEntity
@@ -1131,4 +1143,36 @@ object Impl {
             }
         }
     }
+
+    fun getIncompatible(enchantment: Enchantment): List<Enchantment> =
+        when (enchantment) {
+            is DamageEnchantment -> mutableListOf(
+                Enchantments.SHARPNESS,
+                Enchantments.SMITE,
+                Enchantments.BANE_OF_ARTHROPODS,
+            ).apply {
+                remove(enchantment)
+            }
+            is DepthStriderEnchantment -> listOf(Enchantments.FROST_WALKER)
+            is FrostWalkerEnchantment -> listOf(Enchantments.DEPTH_STRIDER)
+            is InfinityEnchantment -> listOf(Enchantments.MENDING)
+            is LuckEnchantment -> listOf(Enchantments.SILK_TOUCH)
+            is MultishotEnchantment -> listOf(Enchantments.PIERCING)
+            is PiercingEnchantment -> listOf(Enchantments.MULTISHOT)
+            is ProtectionEnchantment -> mutableListOf(
+                Enchantments.PROTECTION,
+                Enchantments.FIRE_PROTECTION,
+                Enchantments.FEATHER_FALLING,
+                Enchantments.BLAST_PROTECTION,
+                Enchantments.PROJECTILE_PROTECTION,
+            ).apply {
+                remove(enchantment)
+            }
+            is RiptideEnchantment -> listOf(
+                Enchantments.LOYALTY,
+                Enchantments.CHANNELING,
+            )
+            is SilkTouchEnchantment -> listOf(Enchantments.FORTUNE)
+            else -> listOf()
+        }
 }

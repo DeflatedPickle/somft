@@ -84,6 +84,22 @@ public abstract class ItemMixin {
               .formatted(Formatting.BLUE));
     }
 
+    if (stack.isOf(Items.WATER_BUCKET) || stack.isOf(Items.LAVA_BUCKET)) {
+      tooltip.add(CommonTexts.EMPTY);
+      tooltip.add(Text.translatable("item.minecraft.bucket.desc1").formatted(Formatting.GRAY));
+      tooltip.add(
+          CommonTexts.space()
+              .append(Text.translatable("item.minecraft.bucket.desc2").formatted(Formatting.BLUE)));
+    }
+
+    if (stack.isOf(Items.BUCKET) || stack.isOf(Items.GLASS_BOTTLE)) {
+      tooltip.add(CommonTexts.EMPTY);
+      tooltip.add(Text.translatable("item.minecraft.bucket.desc1").formatted(Formatting.GRAY));
+      tooltip.add(
+          CommonTexts.space()
+              .append(Text.translatable("item.minecraft.bucket.desc3").formatted(Formatting.BLUE)));
+    }
+
     var tame = new ArrayList<String>();
     var breed = new ArrayList<String>();
     var breedTamed = new ArrayList<String>();

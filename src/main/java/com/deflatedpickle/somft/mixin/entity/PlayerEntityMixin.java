@@ -47,8 +47,6 @@ public abstract class PlayerEntityMixin extends LivingEntity implements HasPets 
     super(entityType, world);
   }
 
-  // TODO: make weapons weaker as they get less sharp
-
   @Redirect(
       method = "damageShield",
       at =
