@@ -70,6 +70,7 @@
     "client": [
         "client.gui.hud.DebugHudMixin",
         "client.gui.hud.InGameHudMixin",
+        "client.gui.screen.ingame.BookEditScreenMixin",
         "client.gui.screen.ingame.CreativeScreenMixin",
         "client.gui.screen.ingame.HandledScreenMixin",
         "client.gui.screen.ingame.InventoryScreenMixin",

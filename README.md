@@ -1,5 +1,5 @@
 # somft ![Build](https://github.com/DeflatedPickle/somft/actions/workflows/gradle-build.yml/badge.svg)
-a vanilla+ mechanics overhaul and additions
+qol tweaks and vanilla+ additions
 
 <p align="center">
   <a href="https://modrinth.com/mod/somft"><img alt="modrinth" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/modrinth_vector.svg"></a>
@@ -61,6 +61,8 @@ a vanilla+ mechanics overhaul and additions
   - better tooltips
   - customizable hotbar
   - recipe book tab tooltips
+  - book editing now:
+    * has jump to start/end buttons
 ### new stuff
 - #### items
   - empty inksack item & ink collection from squids

@@ -1129,7 +1129,7 @@ object Impl {
                         )
                     }
 
-                    val plus = if (SomftClient.CONFIG.hudConfig.hotbarConfig.layout == HotbarLayout.CIRCLE) 3 else 2
+                    val plus = if (SomftClient.CONFIG.hudConfig.hotbarConfig.layout == HotbarLayout.CIRCLE) 3 else 1
                     renderHotbarItem(
                         graphics,
                         x + plus,
