@@ -14,7 +14,7 @@ class SomftCraftConfig : WrappedConfig() {
     val hudConfig = HUDConfig()
 
     class HUDConfig : Section {
-        val showControls = true
+        val showControls = false
         val showLilGuy = true
         val showTools = true
 

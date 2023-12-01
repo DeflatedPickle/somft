@@ -40,6 +40,9 @@ a vanilla+ mechanics overhaul and additions
     - light carved pumpkins
   - projectiles break flower pots
   - cauldrons can be filled with a bucket of fish
+  - item frames can be:
+    * waxed to stop the item rotating & being popped out
+    * crouch+interacted to reset item rotation
 - #### armor
   - lower armour stops berry bushes hurting
     * doesn't work for chainmail
