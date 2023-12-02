@@ -5,7 +5,7 @@ package com.deflatedpickle.somft.mixin.client.gui.screen.ingame;
 import com.deflatedpickle.somft.api.BookScreenExtra;
 import com.deflatedpickle.somft.client.gui.widget.SoundIconWidget;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.BookEditScreen;
+import net.minecraft.client.gui.screen.ingame.BookScreen;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -18,37 +18,32 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @SuppressWarnings({"SpellCheckingInspection", "UnusedMixin"})
-@Mixin(BookEditScreen.class)
-public abstract class BookEditScreenMixin extends Screen implements BookScreenExtra {
-
-  @Shadow private int currentPage;
-
-  @Shadow
-  protected abstract void updateButtons();
+@Mixin(BookScreen.class)
+public abstract class BookScreenMixin extends Screen implements BookScreenExtra {
+  @Shadow private int pageIndex;
 
   @Shadow
-  protected abstract void changePage();
+  protected abstract void updatePageButtons();
 
   @Shadow
-  protected abstract int countPages();
+  public abstract int getPageCount();
 
-  @Shadow private boolean signing;
   @Unique private SoundIconWidget lastPageButton;
   @Unique private SoundIconWidget firstPageButton;
 
-  protected BookEditScreenMixin(Text title) {
+  protected BookScreenMixin(Text title) {
     super(title);
   }
 
   @Inject(
-      method = "init",
+      method = "addPageButtons",
       at =
           @At(
               value = "INVOKE",
-              target = "Lnet/minecraft/client/gui/screen/ingame/BookEditScreen;updateButtons()V",
+              target = "Lnet/minecraft/client/gui/screen/ingame/BookScreen;updatePageButtons()V",
               shift = At.Shift.BEFORE),
       locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-  public void somft$init(CallbackInfo ci, int i, int j) {
+  public void somft$addPageButtons(CallbackInfo ci, int i, int j) {
     var icons = new Identifier("somft", "textures/gui/book.png");
     this.lastPageButton =
         this.addDrawableChild(
@@ -82,25 +77,23 @@ public abstract class BookEditScreenMixin extends Screen implements BookScreenEx
                 buttonWidget -> this.somft$openFirstPage()));
   }
 
-  @Inject(method = "updateButtons", at = @At("TAIL"))
-  public void somft$updateButtons(CallbackInfo ci) {
-    this.firstPageButton.visible = !this.signing && this.currentPage > 0;
-    this.lastPageButton.visible = !this.signing && this.currentPage < this.countPages() - 1;
-  }
-
   @Unique
   public void somft$openFirstPage() {
-    this.currentPage = 0;
+    this.pageIndex = 0;
 
-    this.updateButtons();
-    this.changePage();
+    this.updatePageButtons();
   }
 
   @Unique
   public void somft$openLastPage() {
-    this.currentPage = this.countPages() - 1;
+    this.pageIndex = this.getPageCount() - 1;
 
-    this.updateButtons();
-    this.changePage();
+    this.updatePageButtons();
+  }
+
+  @Inject(method = "updatePageButtons", at = @At("TAIL"))
+  public void somft$updatePageButtons(CallbackInfo ci) {
+    this.firstPageButton.visible = this.pageIndex > 0;
+    this.lastPageButton.visible = this.pageIndex < this.getPageCount() - 1;
   }
 }

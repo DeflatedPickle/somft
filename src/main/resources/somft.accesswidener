@@ -241,3 +241,4 @@ accessible field net/minecraft/item/EntityBucketItem emptyingSound Lnet/minecraf
 accessible method net/minecraft/item/EntityBucketItem spawnEntity (Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/math/BlockPos;)V
 mutable field net/minecraft/state/StateManager VALID_NAME_PATTERN Ljava/util/regex/Pattern;
 accessible field net/minecraft/state/StateManager VALID_NAME_PATTERN Ljava/util/regex/Pattern;
+accessible method net/minecraft/client/gui/screen/ingame/BookScreen getPageCount ()I
