@@ -15,6 +15,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
 import net.minecraft.block.BlockState
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.network.ClientPlayNetworkHandler
+import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.client.render.entity.LivingEntityRenderer
 import net.minecraft.client.render.entity.model.EntityModel
@@ -34,6 +35,7 @@ import net.minecraft.world.BlockRenderView
 import org.quiltmc.loader.api.ModContainer
 import org.quiltmc.loader.api.config.QuiltConfig
 import org.quiltmc.qsl.base.api.entrypoint.client.ClientModInitializer
+import org.quiltmc.qsl.block.extensions.api.client.BlockRenderLayerMap
 import org.quiltmc.qsl.networking.api.PacketSender
 import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking
 
@@ -59,6 +61,8 @@ object SomftClient : ClientModInitializer {
 
     override fun onInitializeClient(mod: ModContainer) {
         CONFIG
+
+        BlockRenderLayerMap.put(RenderLayer.getCutout(), Somft.RAIN_DETECTOR_BLOCK)
 
         // TODO: hide quiver arrows when it's empty
 

@@ -25,6 +25,7 @@ qol tweaks and vanilla+ additions
   - shows arrows stuck in mobs & lets you pull them out
   - feed squids raw fish to make baby squids
   - expanded pet behaviour _(experimental)_
+  - creepers are arthropod's
 - #### items
   - shows extra info for held items
   - flowers are edible but disgusting
@@ -63,6 +64,7 @@ qol tweaks and vanilla+ additions
   - recipe book tab tooltips
   - book editing now:
     * has jump to start/end buttons
+    * remove/clear page buttons
 ### new stuff
 - #### items
   - empty inksack item & ink collection from squids
@@ -83,6 +85,7 @@ qol tweaks and vanilla+ additions
   - milk cauldron
     * removes status effects
   - potion cauldrons
+  - weather detector
 - #### enchantments
   - curse of degradation
     * the applied item takes triple damage

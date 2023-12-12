@@ -34,6 +34,7 @@
         "entity.vehicle.HopperMinecartEntityMixin",
         "entity.vehicle.MinecartEntityMixin",
         "entity.vehicle.TntMinecartEntityMixin",
+        "entity.CreeperEntityMixin",
         "entity.EntityMixin",
         "entity.EntityTypeMixin",
         "entity.HorseEntityMixin",

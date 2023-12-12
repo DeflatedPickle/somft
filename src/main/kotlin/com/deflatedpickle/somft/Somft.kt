@@ -8,9 +8,11 @@
 package com.deflatedpickle.somft
 
 import com.deflatedpickle.somft.block.PotionCauldronBlock
+import com.deflatedpickle.somft.block.RainDetectorBlock
 import com.deflatedpickle.somft.block.cauldron.MilkCauldronBlock
 import com.deflatedpickle.somft.block.dispenser.HorseArmorDispenserBehavior
 import com.deflatedpickle.somft.block.dispenser.TorchDispenserBehavior
+import com.deflatedpickle.somft.block.entity.RainDetectorBlockEntity
 import com.deflatedpickle.somft.enchantment.DegradationCurseEnchantment
 import com.deflatedpickle.somft.enchantment.MalnutritionCurseEnchantment
 import com.deflatedpickle.somft.entity.data.IntArrayTrackedDataHandler
@@ -37,6 +39,7 @@ import net.minecraft.command.CommandBuildContext
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.data.TrackedDataHandlerRegistry
 import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.item.BlockItem
 import net.minecraft.item.EntityBucketItem
 import net.minecraft.item.Item
 import net.minecraft.item.ItemGroups
@@ -50,8 +53,6 @@ import net.minecraft.recipe.RecipeSerializer
 import net.minecraft.recipe.SpecialRecipeSerializer
 import net.minecraft.registry.Registries
 import net.minecraft.registry.Registry
-import net.minecraft.resource.ResourceManager
-import net.minecraft.resource.ResourceType
 import net.minecraft.server.command.CommandManager
 import net.minecraft.server.command.ServerCommandSource
 import net.minecraft.sound.SoundEvents
@@ -62,7 +63,9 @@ import net.minecraft.world.GameRules
 import net.minecraft.world.World
 import org.quiltmc.loader.api.ModContainer
 import org.quiltmc.qsl.base.api.entrypoint.ModInitializer
+import org.quiltmc.qsl.block.entity.api.QuiltBlockEntityTypeBuilder
 import org.quiltmc.qsl.command.api.CommandRegistrationCallback
+import org.quiltmc.qsl.item.setting.api.QuiltItemSettings
 
 object Somft : ModInitializer {
     val CHAINMAIL_HORSE_ARMOUR: Item = HorseArmorItemExt(6, "chainmail", Item.Settings().maxCount(1))
@@ -119,6 +122,17 @@ object Somft : ModInitializer {
 
     val POTION_CAULDRON = Registry.register(Registries.BLOCK, Identifier("somft", "potion_cauldron"), PotionCauldronBlock())
 
+    val RAIN_DETECTOR_BLOCK = Registry.register(
+        Registries.BLOCK,
+        Identifier("somft", "rain_detector"),
+        RainDetectorBlock()
+    )
+    val RAIN_DETECTOR_BLOCK_ENTITY = Registry.register(
+        Registries.BLOCK_ENTITY_TYPE,
+        Identifier("somft", "rain_detector_block_entity"),
+        QuiltBlockEntityTypeBuilder.create(::RainDetectorBlockEntity, RAIN_DETECTOR_BLOCK).build()
+    )
+
     override fun onInitialize(mod: ModContainer) {
         Registry.register(Registries.ITEM, Identifier(mod.metadata().id(), "empty_ink_sac"), EmptyInkSacItem)
         Registry.register(Registries.ITEM, Identifier(mod.metadata().id(), "chainmail_horse_armor"), CHAINMAIL_HORSE_ARMOUR)
@@ -130,6 +144,8 @@ object Somft : ModInitializer {
         // TODO: add variant eggs?
         Registry.register(Registries.ITEM, Identifier(mod.metadata().id(), "tamed_fox_spawn_egg"), TAMED_FOX_SPAWN_EGG)
         Registry.register(Registries.ITEM, Identifier(mod.metadata().id(), "tamed_parrot_spawn_egg"), TAMED_PARROT_SPAWN_EGG)
+
+        Registry.register(Registries.ITEM, Identifier(mod.metadata().id(), "rain_detector"), BlockItem(RAIN_DETECTOR_BLOCK, QuiltItemSettings()))
 
         Registry.register(Registries.BLOCK, Identifier(mod.metadata().id(), "milk_cauldron"), MilkCauldronBlock)
 
@@ -151,6 +167,10 @@ object Somft : ModInitializer {
             entries.addItem(TAMED_WOLF_SPAWN_EGG)
             entries.addItem(TAMED_FOX_SPAWN_EGG)
             entries.addItem(TAMED_PARROT_SPAWN_EGG)
+        }
+
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.REDSTONE_BLOCKS).register { entries ->
+            entries.addItem(RAIN_DETECTOR_BLOCK)
         }
 
         LootTableEvents.MODIFY.register { resourceManager, lootManager, id, tableBuilder, source ->

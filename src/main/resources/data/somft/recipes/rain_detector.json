@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "cRc",
+    "iii"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:iron_bars"
+    },
+    "c": {
+      "item": "minecraft:copper_ingot"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "i": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "item": "somft:rain_detector"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "inverted=false": {
+      "model": "somft:block/rain_detector"
+    },
+    "inverted=true": {
+      "model": "somft:block/rain_detector_inverted"
+    }
+  }
+}

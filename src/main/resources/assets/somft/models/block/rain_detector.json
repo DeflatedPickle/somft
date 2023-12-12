@@ -1,0 +1,7 @@
+{
+	"parent": "somft:block/template_rain_detector",
+	"textures": {
+		"side": "minecraft:block/cauldron_inner",
+		"top": "somft:block/rain_detector_top"
+	}
+}

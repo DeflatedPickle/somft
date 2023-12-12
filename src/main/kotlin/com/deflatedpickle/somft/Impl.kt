@@ -1129,11 +1129,28 @@ object Impl {
                         )
                     }
 
-                    val plus = if (SomftClient.CONFIG.hudConfig.hotbarConfig.layout == HotbarLayout.CIRCLE) 3 else 1
+                    var xOffset = 0
+                    var yOffset = 0
+
+                    when (SomftClient.CONFIG.hudConfig.hotbarConfig.layout) {
+                        HotbarLayout.ROW -> {
+                            xOffset = 2
+                            yOffset = 3
+                        }
+                        HotbarLayout.COLUMN -> {
+                            xOffset = 3
+                            yOffset = 2
+                        }
+                        HotbarLayout.CIRCLE -> {
+                            xOffset = 3
+                            yOffset = 3
+                        }
+                    }
+
                     renderHotbarItem(
                         graphics,
-                        x + plus,
-                        y + plus + 1,
+                        x + xOffset,
+                        y + yOffset,
                         tickDelta,
                         entity,
                         entity.inventory.main[i],

@@ -23,6 +23,8 @@ import org.quiltmc.qsl.item.setting.api.QuiltItemSettings
 
 object LeashedArrow : ArrowItem(QuiltItemSettings()) {
     // TODO: make a custom model to display the original arrow
+    // TODO: make the leash snap when it goes too far
+    // TODO: make the crafting take up to 8 leads to increase lead length
 
     override fun getName(stack: ItemStack): MutableText =
         Text.literal(I18n.translate("item.somft.leashed_arrow", getArrowStack(stack).name.string))

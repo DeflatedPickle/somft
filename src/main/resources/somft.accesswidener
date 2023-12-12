@@ -242,3 +242,4 @@ accessible method net/minecraft/item/EntityBucketItem spawnEntity (Lnet/minecraf
 mutable field net/minecraft/state/StateManager VALID_NAME_PATTERN Ljava/util/regex/Pattern;
 accessible field net/minecraft/state/StateManager VALID_NAME_PATTERN Ljava/util/regex/Pattern;
 accessible method net/minecraft/client/gui/screen/ingame/BookScreen getPageCount ()I
+accessible field net/minecraft/block/DaylightDetectorBlock SHAPE Lnet/minecraft/util/shape/VoxelShape;
