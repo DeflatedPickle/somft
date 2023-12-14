@@ -66,8 +66,8 @@
 
     "interaction.entity": "Interact with Entity:",
     "interaction.entity.tame": "Tame %s",
-    "interaction.entity.breed": "Breed %s",
-    "interaction.entity.breed.tamed": "Breed (Tamed) %s",
+    "interaction.entity.breed": "Mate %s",
+    "interaction.entity.breed.tamed": "Mate (Tamed) %s",
     "interaction.entity.delimiter": ", ",
 
     "item.minecraft.bucket.desc1": "Interacts with Cauldron",

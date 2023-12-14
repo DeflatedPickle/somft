@@ -32,7 +32,7 @@ import org.quiltmc.qsl.item.setting.api.QuiltItemSettings
 import java.util.Optional
 
 // TODO: add a way to select an arrow
-object QuiverItem : BundleItem(QuiltItemSettings()), Trinket {
+object QuiverItem : BundleItem(QuiltItemSettings().maxCount(1)), Trinket {
     init {
         TrinketsApi.registerTrinket(this, this)
     }
