@@ -243,3 +243,4 @@ mutable field net/minecraft/state/StateManager VALID_NAME_PATTERN Ljava/util/reg
 accessible field net/minecraft/state/StateManager VALID_NAME_PATTERN Ljava/util/regex/Pattern;
 accessible method net/minecraft/client/gui/screen/ingame/BookScreen getPageCount ()I
 accessible field net/minecraft/block/DaylightDetectorBlock SHAPE Lnet/minecraft/util/shape/VoxelShape;
+accessible method net/minecraft/entity/Entity getSavedEntityId ()Ljava/lang/String;

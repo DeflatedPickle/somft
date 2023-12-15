@@ -14,8 +14,10 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
-@SuppressWarnings({"UnusedMixin", "rawtypes"})
+@SuppressWarnings({"UnusedMixin", "rawtypes", "SpellCheckingInspection"})
 @Mixin(ParrotEntityModel.class)
 public abstract class ParrotEntityModelMixin extends SinglePartEntityModel implements GetParts {
 
@@ -30,7 +32,7 @@ public abstract class ParrotEntityModelMixin extends SinglePartEntityModel imple
   @Shadow @Final private ModelPart leftLeg;
   @Shadow @Final private ModelPart rightLeg;
   @Unique private final boolean headScaled = false;
-  @Unique private final float childHeadYOffset = 3f;
+  @Unique private final float childHeadYOffset = 3f; // 5f
   @Unique private final float childHeadZOffset = 2f;
   @Unique private final float invertedChildHeadScale = 2f;
   @Unique private final float invertedChildBodyScale = 2f;
@@ -78,6 +80,18 @@ public abstract class ParrotEntityModelMixin extends SinglePartEntityModel imple
               bodyPart ->
                   bodyPart.render(matrices, vertices, light, overlay, red, green, blue, alpha));
     }
+  }
+
+  @Redirect(
+      method = "poseOnShoulder",
+      at =
+          @At(
+              value = "INVOKE",
+              target =
+                  "Lnet/minecraft/client/model/ModelPart;render(Lnet/minecraft/client/util/math/MatrixStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;II)V"))
+  public void somft$poseOnShoulder$render(
+      ModelPart instance, MatrixStack matrices, VertexConsumer vertices, int light, int overlay) {
+    this.render(matrices, vertices, light, overlay, 1f, 1f, 1f, 1f);
   }
 
   @NotNull

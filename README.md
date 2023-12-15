@@ -26,7 +26,9 @@ qol tweaks and vanilla+ additions
   - feed squids raw fish to make baby squids
   - expanded pet behaviour _(experimental)_
   - creepers are arthropod's
-  - tamed parrots can be healed & mate with seeds
+  - tamed parrots can be;
+    * healed & mate with seeds
+    * picked up by couch+interacting
 - #### items
   - shows extra info for held items
   - flowers are edible but disgusting

@@ -6,6 +6,7 @@ import static net.minecraft.entity.passive.ParrotEntity.TAMING_INGREDIENTS;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.injector.WrapWithCondition;
 import java.util.UUID;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.goal.AnimalMateGoal;
@@ -15,6 +16,7 @@ import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.passive.TameableShoulderEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -30,6 +32,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @SuppressWarnings({"SpellCheckingInspection", "UnusedMixin"})
 @Mixin(ParrotEntity.class)
+// TODO: make cookies only posion
 public abstract class ParrotEntityMixin extends TameableShoulderEntity {
   @Shadow
   public abstract boolean isBreedingItem(ItemStack stack);
@@ -107,6 +110,28 @@ public abstract class ParrotEntityMixin extends TameableShoulderEntity {
       var foodComponent = item.getFoodComponent();
       this.heal(foodComponent == null ? 1f : foodComponent.getHunger());
       cir.setReturnValue(ActionResult.SUCCESS);
+    }
+  }
+
+  @WrapWithCondition(
+      method = "interactMob",
+      at =
+          @At(
+              value = "INVOKE",
+              target = "Lnet/minecraft/entity/passive/ParrotEntity;setSitting(Z)V"))
+  public boolean somft$interactMob$setSitting(
+      ParrotEntity instance, boolean b, PlayerEntity player, Hand hand) {
+    return !player.isSneaking();
+  }
+
+  @Inject(method = "interactMob", at = @At(value = "RETURN", ordinal = 2))
+  public void somft$interactMob$setShoulderEntity(
+      PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
+    if (!this.getWorld().isClient
+        && this.isReadyToSitOnPlayer()
+        && !this.isInSittingPose()
+        && !this.isLeashed()) {
+      this.mountOnto((ServerPlayerEntity) player);
     }
   }
 
