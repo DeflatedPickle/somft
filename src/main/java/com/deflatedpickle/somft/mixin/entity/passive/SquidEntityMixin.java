@@ -117,6 +117,7 @@ public abstract class SquidEntityMixin extends WaterCreatureEntity
   @Override
   public void somft$onGrowUp() {}
 
+  @Override
   public boolean somft$isBaby() {
     return this.getBreedingAge() < 0;
   }

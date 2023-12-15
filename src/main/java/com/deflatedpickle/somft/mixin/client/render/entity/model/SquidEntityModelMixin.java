@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-@SuppressWarnings("UnusedMixin")
+@SuppressWarnings({"UnusedMixin", "SpellCheckingInspection"})
 @Mixin(SquidEntityModel.class)
 public class SquidEntityModelMixin {
   @Shadow @Final private ModelPart root;
@@ -29,7 +29,7 @@ public class SquidEntityModelMixin {
               target = "Lnet/minecraft/client/model/ModelPart;pitch:F",
               shift = At.Shift.AFTER),
       locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-  public void resizeTentacles(
+  public void somft$setAngles$tentacles(
       Entity entity,
       float limbAngle,
       float limbDistance,
@@ -53,7 +53,7 @@ public class SquidEntityModelMixin {
   }
 
   @Inject(method = "setAngles", at = @At("TAIL"))
-  public void resizeBody(
+  public void somft$setAngles$root(
       Entity entity,
       float limbAngle,
       float limbDistance,
