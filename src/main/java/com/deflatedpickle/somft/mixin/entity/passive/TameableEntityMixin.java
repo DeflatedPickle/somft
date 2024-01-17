@@ -1,4 +1,4 @@
-/* Copyright (c) 2023 DeflatedPickle under the GPLv3 license */
+/* Copyright (c) 2023-2024 DeflatedPickle under the GPLv3 license */
 
 package com.deflatedpickle.somft.mixin.entity.passive;
 
@@ -23,7 +23,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@SuppressWarnings({"UnusedMixin", "SpellCheckingInspection", "WrongEntityDataParameterClass"})
+@SuppressWarnings({
+  "UnusedMixin",
+  "SpellCheckingInspection",
+  "WrongEntityDataParameterClass",
+  "unused"
+})
 @Mixin(TameableEntity.class)
 public abstract class TameableEntityMixin extends AnimalEntity implements PetLogic {
   @Shadow

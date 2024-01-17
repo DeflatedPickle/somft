@@ -1,4 +1,4 @@
-/* Copyright (c) 2023 DeflatedPickle under the GPLv3 license */
+/* Copyright (c) 2023-2024 DeflatedPickle under the GPLv3 license */
 
 @file:Suppress("MemberVisibilityCanBePrivate", "UNUSED_PARAMETER", "SpellCheckingInspection")
 
@@ -603,8 +603,8 @@ object Impl {
                 ) { entity: CowEntity -> entity.isAlive && !entity.isBaby }
         ) {
             if (item == Items.BUCKET) {
-                if ((cow as Milkable).`somft$getMilkTicks`() <= 0) {
-                    (cow as Milkable).`somft$setMilkTicks`(24000 / 5)
+                if ((cow as Milkable).`somft$isMilkable`()) {
+                    (cow as Milkable).`somft$setMilked`(true)
                     cir.returnValue = Items.MILK_BUCKET.defaultStack
                 } else {
                     world.playSound(null, blockPos, SoundEvents.ENTITY_COW_MILK, SoundCategory.PLAYERS, 1.0f, 1.0f)

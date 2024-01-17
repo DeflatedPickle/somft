@@ -91,6 +91,7 @@
         "client.render.entity.model.AnimalModelMixin",
         "client.render.entity.model.BipedEntityModelMixin",
         "client.render.entity.model.CompositeEntityModelMixin",
+        "client.render.entity.model.CowEntityModelMixin",
         "client.render.entity.model.EntityModelMixin",
         "client.render.entity.model.ParrotEntityModelMixin",
         "client.render.entity.model.SinglePartEntityModelMixin",

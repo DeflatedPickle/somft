@@ -21,7 +21,7 @@ qol tweaks and vanilla+ additions
   - mobs can be set on fire directly
   - mobs on fire spread said fire (gamerule: `doMobFireGrief`)
   - recently fed animals lose interest in food
-  - milking has a delay
+  - cows need to eat grass between being milked
   - shows arrows stuck in mobs & lets you pull them out
   - feed squids raw fish to make baby squids
   - expanded pet behaviour _(experimental)_
