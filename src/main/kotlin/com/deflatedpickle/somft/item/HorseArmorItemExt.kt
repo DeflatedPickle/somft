@@ -1,4 +1,4 @@
-/* Copyright (c) 2023 DeflatedPickle under the GPLv3 license */
+/* Copyright (c) 2023-2024 DeflatedPickle under the GPLv3 license */
 
 package com.deflatedpickle.somft.item
 
@@ -11,6 +11,6 @@ class HorseArmorItemExt(
     settings: Settings,
 ) : HorseArmorItem(bonus, name, settings) {
     override fun getEntityTexture(): Identifier {
-        return Identifier("somftcraft", entityTexture)
+        return Identifier("somft", entityTexture)
     }
 }

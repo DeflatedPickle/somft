@@ -1,4 +1,4 @@
-/* Copyright (c) 2023 DeflatedPickle under the GPLv3 license */
+/* Copyright (c) 2023-2024 DeflatedPickle under the GPLv3 license */
 
 @file:Suppress("unused", "SpellCheckingInspection", "HasPlatformType")
 
@@ -6,7 +6,7 @@ package com.deflatedpickle.somft
 
 import com.deflatedpickle.somft.block.PotionCauldronBlock
 import com.deflatedpickle.somft.client.gui.ingame.ArmorStandScreen
-import com.deflatedpickle.somft.config.SomftCraftConfig
+import com.deflatedpickle.somft.config.SomftConfig
 import com.deflatedpickle.somft.item.QuiverItem
 import com.deflatedpickle.somft.screen.ArmorStandScreenHandler
 import dev.emi.trinkets.api.SlotReference
@@ -40,7 +40,7 @@ import org.quiltmc.qsl.networking.api.PacketSender
 import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking
 
 object SomftClient : ClientModInitializer {
-    val CONFIG = QuiltConfig.create("somft", "config", SomftCraftConfig::class.java)
+    val CONFIG = QuiltConfig.create("somft", "config", SomftConfig::class.java)
 
     val tooltips = listOf(
         "gui.loadtip.digging_down",

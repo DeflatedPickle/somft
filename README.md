@@ -22,6 +22,7 @@ qol tweaks and vanilla+ additions
   - mobs on fire spread said fire (gamerule: `doMobFireGrief`)
   - recently fed animals lose interest in food
   - cows need to eat grass between being milked
+  - chickens need to eat grass between laying eggs
   - shows arrows stuck in mobs & lets you pull them out
   - feed squids raw fish to make baby squids
   - expanded pet behaviour _(experimental)_

@@ -38,7 +38,7 @@ public abstract class CowEntityModelMixin extends QuadrupedEntityModel {
     super.animateModel(entity, limbAngle, limbDistance, tickDelta);
 
     if (entity instanceof EatAngles eatEntity) {
-      this.head.pivotY = 6.0F + eatEntity.somft$getNeckAngle(tickDelta) * 9.0F;
+      this.head.pivotY = 4.0F + eatEntity.somft$getNeckAngle(tickDelta) * 8.0F;
       this.headPitchModifier = eatEntity.somft$getHeadAngle(tickDelta);
     }
   }

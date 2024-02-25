@@ -1,4 +1,4 @@
-/* Copyright (c) 2023 DeflatedPickle under the GPLv3 license */
+/* Copyright (c) 2023-2024 DeflatedPickle under the GPLv3 license */
 
 package com.deflatedpickle.somft.mixin.entity;
 
@@ -14,16 +14,17 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@SuppressWarnings("UnusedMixin")
+@SuppressWarnings({"UnusedMixin", "ConstantValue", "SpellCheckingInspection"})
 @Mixin(Entity.class)
 public abstract class EntityMixin {
   @Inject(method = "tick", at = @At("RETURN"))
-  public void onTick(CallbackInfo info) {
+  public void somft$tick(CallbackInfo info) {
     Impl.INSTANCE.entityFireSpread((Entity) (Object) this);
   }
 
   @Inject(method = "interact", at = @At("HEAD"), cancellable = true)
-  public void interact(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
+  public void somft$interact(
+      PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
     if ((Object) this instanceof LivingEntity
         && Impl.INSTANCE.removeArrow((LivingEntity) (Object) this, player)) {
       cir.setReturnValue(ActionResult.SUCCESS);

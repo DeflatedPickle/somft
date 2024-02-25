@@ -1,4 +1,4 @@
-/* Copyright (c) 2023 DeflatedPickle under the GPLv3 license */
+/* Copyright (c) 2023-2024 DeflatedPickle under the GPLv3 license */
 
 @file:Suppress("SpellCheckingInspection")
 
@@ -10,7 +10,7 @@ import net.minecraft.util.DyeColor
 import org.quiltmc.config.api.Config.Section
 import org.quiltmc.config.api.WrappedConfig
 
-class SomftCraftConfig : WrappedConfig() {
+class SomftConfig : WrappedConfig() {
     val hudConfig = HUDConfig()
 
     class HUDConfig : Section {

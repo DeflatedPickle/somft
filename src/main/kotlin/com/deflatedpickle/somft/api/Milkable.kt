@@ -6,6 +6,5 @@ package com.deflatedpickle.somft.api
 interface Milkable {
     fun `somft$isMilked`(): Boolean
     fun `somft$setMilked`(milked: Boolean)
-    fun `somft$milked`()
     fun `somft$isMilkable`(): Boolean
 }
