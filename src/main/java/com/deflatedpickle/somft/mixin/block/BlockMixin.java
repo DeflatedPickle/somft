@@ -1,4 +1,4 @@
-/* Copyright (c) 2023 DeflatedPickle under the GPLv3 license */
+/* Copyright (c) 2023-2024 DeflatedPickle under the GPLv3 license */
 
 package com.deflatedpickle.somft.mixin.block;
 

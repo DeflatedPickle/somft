@@ -1,4 +1,4 @@
-/* Copyright (c) 2023 DeflatedPickle under the GPLv3 license */
+/* Copyright (c) 2023-2024 DeflatedPickle under the GPLv3 license */
 
 @file:Suppress(
     "ClassName", "SpellCheckingInspection", "MemberVisibilityCanBePrivate", "HasPlatformType",
@@ -21,6 +21,7 @@ import com.deflatedpickle.somft.item.HorseArmorItemExt
 import com.deflatedpickle.somft.item.LeashedArrow
 import com.deflatedpickle.somft.item.QuiverItem
 import com.deflatedpickle.somft.item.SpawnEggExt
+import com.deflatedpickle.somft.recipe.DispenserRecipe
 import com.deflatedpickle.somft.recipe.LeashedArrowRecipe
 import com.deflatedpickle.somft.screen.PetManagerScreenHandlerType
 import com.deflatedpickle.somft.server.command.HealthCommand
@@ -77,6 +78,18 @@ object Somft : ModInitializer {
             identifier: Identifier,
             craftingCategory: CraftingCategory ->
             LeashedArrowRecipe(
+                identifier,
+                craftingCategory
+            )
+        }
+    )
+
+    val DISPENSER_RECIPE = RecipeSerializer.register(
+        "dispenser",
+        SpecialRecipeSerializer {
+            identifier: Identifier,
+            craftingCategory: CraftingCategory ->
+            DispenserRecipe(
                 identifier,
                 craftingCategory
             )

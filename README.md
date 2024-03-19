@@ -43,6 +43,7 @@ qol tweaks and vanilla+ additions
     - dye sheep
     - carve pumpkins
     - light carved pumpkins
+  - dispensers crafted with enchanted bows retain the enchantments
   - projectiles break flower pots
   - cauldrons can be filled with a bucket of fish
   - item frames can be:

@@ -1,4 +1,4 @@
-/* Copyright (c) 2023 DeflatedPickle under the GPLv3 license */
+/* Copyright (c) 2023-2024 DeflatedPickle under the GPLv3 license */
 
 package com.deflatedpickle.somft.mixin.entity.decoration;
 
@@ -43,9 +43,6 @@ public abstract class ItemFrameEntityMixin extends AbstractDecorationEntity impl
       EntityType<? extends AbstractDecorationEntity> entityType, World world) {
     super(entityType, world);
   }
-
-  @Shadow
-  public abstract void setRotation(int value);
 
   @Shadow
   public abstract ItemStack getHeldItemStack();

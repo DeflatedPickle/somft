@@ -1,12 +1,15 @@
-/* Copyright (c) 2023 DeflatedPickle under the GPLv3 license */
+/* Copyright (c) 2023-2024 DeflatedPickle under the GPLv3 license */
 
 package com.deflatedpickle.somft.mixin.item;
 
+import java.util.List;
 import java.util.Optional;
 import net.minecraft.block.Block;
 import net.minecraft.block.CropBlock;
 import net.minecraft.block.PlantBlock;
+import net.minecraft.block.dispenser.DispenserBlock;
 import net.minecraft.client.item.BundleTooltipData;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.item.TooltipData;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -16,13 +19,15 @@ import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
-@SuppressWarnings("UnusedMixin")
+@SuppressWarnings({"UnusedMixin", "unused"})
 @Mixin(BlockItem.class)
 public abstract class BlockItemMixin extends Item {
   @Shadow
@@ -69,5 +74,18 @@ public abstract class BlockItemMixin extends Item {
       }
     }
     return super.getTooltipData(stack);
+  }
+
+  @Override
+  public void appendTooltip(
+      ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
+    if (stack.getItem() instanceof BlockItem blockItem
+        && blockItem.getBlock() instanceof DispenserBlock) {
+      var bowStack = ItemStack.fromNbt(stack.getSubNbt("Bow"));
+      // tooltip.add(bowStack.getName());
+      var enchantmentNbt =
+          bowStack.getOrCreateNbt().getList("Enchantments", NbtElement.COMPOUND_TYPE);
+      ItemStack.appendEnchantments(tooltip, enchantmentNbt);
+    }
   }
 }

@@ -1,4 +1,4 @@
-/* Copyright (c) 2023 DeflatedPickle under the GPLv3 license */
+/* Copyright (c) 2023-2024 DeflatedPickle under the GPLv3 license */
 
 @file:Suppress("KotlinConstantConditions", "MemberVisibilityCanBePrivate")
 
@@ -41,7 +41,7 @@ object LeashedArrow : ArrowItem(QuiltItemSettings()) {
         ItemStack.fromNbt(stack.getOrCreateSubNbt("Arrow"))
 
     override fun getDefaultStack() =
-        setArrowStack(ItemStack(this), Items.ARROW.defaultStack)
+        setArrowStack(super.getDefaultStack(), Items.ARROW.defaultStack)
 
     override fun createArrow(
         world: World,

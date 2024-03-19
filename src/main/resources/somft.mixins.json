@@ -2,10 +2,13 @@
     "mixins": [
         "block.cauldron.CauldronBehaviorMixin",
         "block.dispenser.ItemDispenserBehaviorMixin",
+        "block.dispenser.ProjectileDispenserBehaviorMixin",
         "block.dispenser.ShearsDispenserBehaviorMixin",
+        "block.entity.DispenserBlockEntityMixin",
         "block.BlastFurnaceBlockMixin",
         "block.BlockMixin",
         "block.CampfireBlockMixin",
+        "block.DispenserBlockMixin",
         "block.CandleBlockMixin",
         "block.FlowerPotBlockMixin",
         "block.FurnaceBlockMixin",
